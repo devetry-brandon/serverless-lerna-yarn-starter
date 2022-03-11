@@ -1,0 +1,27 @@
+{
+  "name": "adobe-sign",
+  "version": "1.0.0",
+  "description": "A package for maintaining interactions with Adobe Sign.",
+  "author": "devetry-brandon <brandon.pfeiffer@devetry.com>",
+  "homepage": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter#readme",
+  "license": "ISC",
+  "main": "lib/adobe-sign.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devetry-brandon/serverless-lerna-yarn-starter.git"
+  },
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter/issues"
+  }
+}

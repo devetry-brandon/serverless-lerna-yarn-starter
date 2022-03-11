@@ -209,3 +209,87 @@ To test this:
 -------
 
 This repo is maintained by [Serverless Stack](https://serverless-stack.com/).
+
+# ASU Specific Notes
+
+## Adding a new package
+
+**Lerna Create**
+
+To add a new package run the following and follow the prompts. You can accept all the defaults by pressing enter for each one.
+
+``` bash
+$ lerna create some-package
+```
+
+**Create src directory**
+
+Create a `src` directory in the root of the package directory.  This is where we will put our typescript code.  You can see this directory is referenced below in our `tsconfig.json` file.
+
+**Add tsconfig**
+
+We are developing in typescript, so you want to add a `tsconfig.json` file. The contents can simply be:
+
+``` json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib"
+  },
+  "include": [
+    "./src"
+  ]
+}
+```
+
+**Add tsc command**
+
+We need to add a `tsc` command to the `scripts` node of the `package.json` file in the package so that lerna can compile typscript along with all other packages that have this command
+
+``` json
+...
+
+"scripts": {
+  "tsc": "tsc",
+  "test": "echo \"Error: run tests from root\" && exit 1"
+},
+
+...
+```
+
+**Add typescript entry point**
+
+Create a `some-package.ts` script in the `src` directory of the package. This script will be where we export any resources that we want to be visible to consumers of the package.
+
+You currently don't have anything to put there so let's put a random function that exports the name of the package.
+
+``` typescript
+export function packageName(): string {
+  return 'some-package';
+}
+```
+
+Let's say in the future you have a service that you want to make available to consumers of this package, `AdobeSignService`.
+
+`some-package/src/services/adobe-sign.service.ts`
+
+``` typescript
+export service AdobeService {
+  public getAgreement(id: string): Agreement {
+    ...
+  }
+}
+```
+
+You should export it from the `some-package.ts` file like so. Probably a good time to get rid of `packageName` as well.
+
+``` typescript
+export function packageName(): string {
+  return 'some-package';
+}
+
+export * from "./services/adobe-sign.service";
+```
+
+**Compile**
+Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
