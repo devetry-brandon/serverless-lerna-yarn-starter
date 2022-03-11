@@ -294,6 +294,10 @@ export * from "./services/adobe-sign.service";
 **Compile**
 Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
 
+``` bash
+$ lerna run tsc
+```
+
 **Add package as dependency to another package**
 
 Run the following command, where `some-other-package` is the name of the directory of the package that you are adding the dependncy to.
@@ -331,4 +335,106 @@ export async function main(event, context) {
     body: JSON.stringify(agreement)
   };
 }
+```
+
+## Adding a new lambda
+
+``` bash
+$ cd lambdas/
+$ serverless install --url https://github.com/AnomalyInnovations/serverless-nodejs-starter --name new-lambda
+$ cd new-lambda
+$ yarn
+```
+
+**Create src directory**
+
+Create a `src` directory in the root of the package directory.  This is where we will put our typescript code.  You can see this directory is referenced below in our `tsconfig.json` file.
+
+**Add tsconfig**
+
+We are developing in typescript, so you want to add a `tsconfig.json` file. The contents can simply be:
+
+``` json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib"
+  },
+  "include": [
+    "./src"
+  ]
+}
+```
+
+**Add tsc command**
+
+We need to add a `tsc` command to the `scripts` node of the `package.json` file in the package so that lerna can compile typscript along with all other packages that have this command
+
+``` json
+...
+
+"scripts": {
+  "tsc": "tsc",
+  "test": "echo \"Error: run tests from root\" && exit 1"
+},
+
+...
+```
+
+**Add lambda handler**
+
+Create a `handler.ts` script in the `src` directory of the package. This script will be where we export any resources that we want to be visible to consumers of the package.
+
+``` typescript
+export const hello = async (event, context) => {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: `Go Serverless v2.0! Your function executed successfully!`,
+    }),
+  };
+};
+```
+
+**Delete handler.js**
+
+You should delete the `handler.js` file in the root of the new-lambda directory because we are going to be generating a new one from our `handler.ts` file.
+
+**Change handler in serverless config**
+
+You want to change the handler location in the `serverless.yml` file since we are compiling out typescript to the output `lib` directory.
+
+``` yaml
+functions:
+  hello:
+    handler: lib/handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+```
+
+**Change runtime**
+
+Change the runtime in serverless.yml
+
+``` yaml
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-east-1
+```
+
+**Compile**
+Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
+
+``` bash
+$ lerna run tsc
+```
+
+**Test lambda locally**
+
+``` bash
+$ serverless invoke local -f hello
 ```

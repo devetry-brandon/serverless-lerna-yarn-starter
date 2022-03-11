@@ -7,11 +7,12 @@
         "noLib": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "target": "es6",
+        "target": "es2020",
         "sourceMap": true,
         "lib": [
-            "es6"
-        ]
+            "esnext"
+        ],
+        "noImplicitUseStrict": true
     },
     "exclude": [
         "node_modules",
