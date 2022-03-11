@@ -1,9 +1,8 @@
-import sample from "sample";
-import lib from "../../libs";
+import { Doctor } from "sample";
 
 export async function main(event, context) {
   return {
     statusCode: 200,
-    body: `Hello Brandon! Via ${sample()} and ${lib()}.`,
+    body: `Hello Brandon! your doctor is ${JSON.stringify(new Doctor("Egon Safar"))}.`,
   };
 }
