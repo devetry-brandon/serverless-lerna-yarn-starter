@@ -9,6 +9,7 @@
     "postinstall": "npm run compileTS"
   },
   "dependencies": {
+    "adobe-sign": "^1.0.0",
     "sample": "^0.0.1"
   },
   "devDependencies": {

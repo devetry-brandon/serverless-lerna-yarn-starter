@@ -293,3 +293,42 @@ export * from "./services/adobe-sign.service";
 
 **Compile**
 Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
+
+**Add package as dependency to another package**
+
+Run the following command, where `some-other-package` is the name of the directory of the package that you are adding the dependncy to.
+
+``` bash
+$ lerna add adobe-sign --scope=some-other-package
+```
+
+The package will now be included in the package.json of the dependent package.
+
+``` json
+...
+
+"dependencies": {
+  "some-package": "^1.0.0",
+  "sample": "^0.0.1"
+},
+
+...
+```
+
+**Using exported resources**
+
+You can now use the exported resources of your package in the dependent.
+
+``` typescript
+import { AdobeSignService } from "adobe-sign";
+
+export async function main(event, context) {
+  let service = new AdobeSignService();
+  let agreement = service.getAgreement("e4bhsk1288281");
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(agreement)
+  };
+}
+```
