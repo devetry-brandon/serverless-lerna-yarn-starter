@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "compileTS": "lerna run tsc",
-    "test": "serverless-bundle test"
+    "test": "serverless-bundle test",
+    "postinstall": "npm run compileTS"
   },
   "dependencies": {
     "sample": "^0.0.1"
