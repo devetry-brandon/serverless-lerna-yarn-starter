@@ -1,14 +1,8 @@
 # NOTE: update this with your service name
 service: adobe-sign-lambda
 
-# Create an optimized package for our functions 
-package:
-  individually: true
-
 plugins:
-  - serverless-bundle # Package our functions with Webpack
-  - serverless-offline
-  - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-bundle
 
 provider:
   name: aws

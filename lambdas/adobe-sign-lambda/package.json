@@ -5,7 +5,9 @@
   "main": "handler.js",
   "scripts": {
     "tsc": "tsc",
-    "test": "serverless-bundle test"
+    "compileTS": "lerna run tsc",
+    "test": "serverless-bundle test",
+    "postinstall": "npm run compileTS"
   },
   "author": "",
   "license": "MIT",
