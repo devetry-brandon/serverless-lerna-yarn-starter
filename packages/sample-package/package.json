@@ -1,6 +1,10 @@
 {
   "name": "sample",
   "version": "0.0.1",
-  "main": "index.js",
-  "license": "MIT"
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "tsc": "tsc"
+  }
 }

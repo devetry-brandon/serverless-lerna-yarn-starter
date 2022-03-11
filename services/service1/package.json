@@ -4,6 +4,7 @@
   "main": "handler.js",
   "license": "MIT",
   "scripts": {
+    "compileTS": "lerna run tsc",
     "test": "serverless-bundle test"
   },
   "dependencies": {
