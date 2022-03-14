@@ -23,5 +23,8 @@
   },
   "bugs": {
     "url": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter/issues"
+  },
+  "dependencies": {
+    "tsyringe": "^4.6.0"
   }
 }

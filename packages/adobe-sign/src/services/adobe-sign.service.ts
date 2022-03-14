@@ -1,11 +1,12 @@
+import { injectable } from "tsyringe";
+import { AdobeSignApi } from "../apis/adobe-sign-api";
 import { Agreement } from "../models/agreement";
 
+@injectable()
 export class AdobeSignService {
-    public getAgreement(id: string): Agreement {
-        let agreement = new Agreement();
+    constructor(private adobeSignApi: AdobeSignApi) {}
 
-        agreement.id = id;
-        
-        return agreement;
+    public async getAgreement(id: string): Promise<Agreement> {
+        return await this.adobeSignApi.getAgreement(id);
     }
 }
