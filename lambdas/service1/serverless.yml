@@ -11,7 +11,7 @@ provider:
 
 functions:
   get:
-    handler: handler.main
+    handler: lib/handler.main
     events:
       - http: GET /
 

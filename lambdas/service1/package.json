@@ -1,13 +1,13 @@
 {
   "name": "service1",
   "version": "0.0.1",
-  "main": "handler.js",
+  "main": "lib/handler.js",
   "license": "MIT",
   "scripts": {
-    "test": "serverless-bundle test"
-  },
-  "dependencies": {
-    "sample": "^0.0.1"
+    "tsc": "tsc",
+    "compileTS": "lerna run tsc",
+    "test": "serverless-bundle test",
+    "postinstall": "yarn run compileTS"
   },
   "devDependencies": {
     "serverless-bundle": "^1.9.0"
