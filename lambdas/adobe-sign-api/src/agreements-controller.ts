@@ -8,6 +8,6 @@ export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGate
     let agreement = await service.getAgreement(event.pathParameters.id);
     return {
         statusCode: 200,
-        body: JSON.stringify(agreement)
+        body: "agreement: " + JSON.stringify(agreement)
     };
 }
