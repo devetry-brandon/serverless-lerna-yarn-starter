@@ -10,6 +10,10 @@
         "postinstall": "yarn run compileTS"
     },
     "devDependencies": {
+        "@types/aws-lambda": "^8.10.93",
         "serverless-bundle": "^1.9.0"
+    },
+    "dependencies": {
+        "adobe-sign": "^1.0.0"
     }
 }
