@@ -339,104 +339,87 @@ export async function main(event, context) {
 
 ## Adding a new lambda
 
-``` bash
-$ cd lambdas/
-$ serverless install --url https://github.com/AnomalyInnovations/serverless-nodejs-starter --name new-lambda
-$ cd new-lambda
-$ yarn
+If you need another lambda function that relates to others that already exist, first see if you can add a new handler to an existing lambda package.
+
+If this is a new package all together, create a new directory in the `/lambdas` directory and add the following files:
+
+`lambdas/new-lambda/src/handler.js`
+
+``` typescript
+export async function main(event, context) {
+  return {
+    statusCode: 200,
+    body: `Hello World! This is a typescript handler.`
+  };
+}
 ```
 
-**Create src directory**
+`lambdas/new-lambda/package.json`
 
-Create a `src` directory in the root of the package directory.  This is where we will put our typescript code.  You can see this directory is referenced below in our `tsconfig.json` file.
+``` json
+{
+  "name": "new-lambda",
+  "version": "0.0.1",
+  "main": "lib/handler.js",
+  "license": "MIT",
+  "scripts": {
+    "tsc": "tsc",
+    "compileTS": "lerna run tsc",
+    "test": "serverless-bundle test",
+    "postinstall": "yarn run compileTS"
+  },
+  "devDependencies": {
+    "serverless-bundle": "^1.9.0"
+  }
+}
+```
 
-**Add tsconfig**
+`lambdas/new-lambda/serverless.yml`
 
-We are developing in typescript, so you want to add a `tsconfig.json` file. The contents can simply be:
+``` yaml
+service: new-lambda
+
+plugins:
+  - serverless-bundle
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+
+functions:
+  get:
+    handler: lib/handler.main
+    events:
+      - http: GET /
+```
+
+`lambdas/new-lambda/tsconfig.json`
 
 ``` json
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib"
+    "outDir": "./lib",
+    "baseUrl": "."
   },
   "include": [
-    "./src"
+      "./src"
   ]
 }
 ```
 
-**Add tsc command**
+**Build and compile**
 
-We need to add a `tsc` command to the `scripts` node of the `package.json` file in the package so that lerna can compile typscript along with all other packages that have this command
-
-``` json
-...
-
-"scripts": {
-  "tsc": "tsc",
-  "test": "echo \"Error: run tests from root\" && exit 1"
-},
-
-...
-```
-
-**Add lambda handler**
-
-Create a `handler.ts` script in the `src` directory of the package. This script will be where we export any resources that we want to be visible to consumers of the package.
-
-``` typescript
-export const hello = async (event, context) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Go Serverless v2.0! Your function executed successfully!`,
-    }),
-  };
-};
-```
-
-**Delete handler.js**
-
-You should delete the `handler.js` file in the root of the new-lambda directory because we are going to be generating a new one from our `handler.ts` file.
-
-**Change handler in serverless config**
-
-You want to change the handler location in the `serverless.yml` file since we are compiling out typescript to the output `lib` directory.
-
-``` yaml
-functions:
-  hello:
-    handler: lib/handler.hello
-    events:
-      - http:
-          path: hello
-          method: get
-```
-
-**Change runtime**
-
-Change the runtime in serverless.yml
-
-``` yaml
-provider:
-  name: aws
-  runtime: nodejs14.x
-  stage: dev
-  region: us-east-1
-```
-
-**Compile**
-Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
+Run `yarn` in the `new-lambda` directory to install any dependencies and compile typescript files.
 
 ``` bash
-$ lerna run tsc
+$ yarn
 ```
 
 **Test lambda locally**
 
 ``` bash
-$ serverless invoke local -f hello
+$ serverless invoke local -f get
 ```
-
-TODO: Add in last two commits that fixed seed deployment
