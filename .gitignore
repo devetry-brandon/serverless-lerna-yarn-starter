@@ -9,3 +9,5 @@ jspm_packages
 .*.sw*
 
 **/lib
+
+.DS_Store
