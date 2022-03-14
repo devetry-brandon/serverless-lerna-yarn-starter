@@ -2,6 +2,62 @@
 
 ## Project Setup
 
+### Dependencies
+
+**Node**
+
+Install Node version 14, or install [Node Version Manager](https://github.com/nvm-sh/nvm) and use version 14 for installing project dependencies.
+
+Having trouble with npm after installing nvm? Do you have a new Apple M1 chip? You may need to update `install-rosetta`. [For reference](https://apple.stackexchange.com/questions/408375/zsh-bad-cpu-type-in-executable).
+
+``` bash
+softwareupdate --install-rosetta
+```
+
+**Serverless**
+
+Use npm to install serverless globally.
+
+``` bash
+$ npm install -g serverless
+```
+
+**Repo**
+
+Clone [this repo](https://github.com/devetry-brandon/serverless-lerna-yarn-starter.git) to a local directory.
+
+Move to that directory and install dependencies with yarn.
+
+``` bash
+$ yarn
+```
+
+Run test to make sure project is setup correctly:
+
+``` bash
+$ cd lambdas/adobe-sign-api
+$ serverless invoke local -f getAgreement --data '{ "pathParameters": {"id":"P50WXIl6PUlonrSH"}}'
+```
+
+You should see the following output, or similar:
+
+``` bash
+Debugger attached.
+WARNING: More than one matching handlers found for 'lib/agreements-controller'. Using 'lib/agreements-controller.js'.
+Bundling with Webpack...
+{
+    "statusCode": 200,
+    "body": "{\"id\":\"P50WXIl6PUlonrSH\"}"
+}
+```
+
+## Testing
+
+We are using jest to run our unit tests.  It is configured in the top level directory, so you need to run the following command from the top level project directory to run tests:
+
+``` bash
+$ yarn test
+```
 
 ## Adding a local package reference
 
