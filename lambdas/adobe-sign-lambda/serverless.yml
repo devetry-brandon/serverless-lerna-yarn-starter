@@ -19,7 +19,7 @@ provider:
 
 functions:
   hello:
-    handler: lib/handler.hello
+    handler: handler.hello
     events:
       - http:
           path: hello
