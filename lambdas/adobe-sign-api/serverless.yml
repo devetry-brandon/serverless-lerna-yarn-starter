@@ -13,4 +13,10 @@ functions:
   getAgreement:
     handler: lib/agreements-controller.getAgreement
     events:
-      - http: GET /
+      - http:
+          path: agreements/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
