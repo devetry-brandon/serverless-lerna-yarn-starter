@@ -1,4 +1,4 @@
-service: adobe-sign-controller
+service: adobe-sign-api
 
 plugins:
   - serverless-bundle
@@ -11,6 +11,6 @@ provider:
 
 functions:
   getAgreement:
-    handler: lib/handler.getAgreement
+    handler: lib/agreements-controller.getAgreement
     events:
       - http: GET /

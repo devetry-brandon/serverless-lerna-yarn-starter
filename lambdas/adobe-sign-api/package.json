@@ -1,5 +1,5 @@
 {
-    "name": "adobe-sign-controller",
+    "name": "adobe-sign-api",
     "version": "0.0.1",
     "main": "lib/handler.js",
     "license": "MIT",
