@@ -343,7 +343,7 @@ If you need another lambda function that relates to others that already exist, f
 
 If this is a new package all together, create a new directory in the `/lambdas` directory and add the following files:
 
-`lambdas/new-lambda/src/handler.js`
+`lambdas/new-lambda/src/handler.ts`
 
 ``` typescript
 export async function main(event, context) {
