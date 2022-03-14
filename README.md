@@ -438,3 +438,5 @@ $ lerna run tsc
 ``` bash
 $ serverless invoke local -f hello
 ```
+
+TODO: Add in last two commits that fixed seed deployment
