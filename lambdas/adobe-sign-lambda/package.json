@@ -7,7 +7,7 @@
     "tsc": "tsc",
     "compileTS": "lerna run tsc",
     "test": "serverless-bundle test",
-    "postinstall": "npm run compileTS"
+    "postinstall": "yarn run compileTS"
   },
   "author": "",
   "license": "MIT",
