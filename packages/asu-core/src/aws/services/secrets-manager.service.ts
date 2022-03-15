@@ -15,7 +15,7 @@ export class SecretsManagerService {
         const secretsManager = this.secretsManagerProvider.resolve(config);
         const fullSecretName = `${process.env[EvironmentVariable.Stage]}-${secretName}`;
 
-        // console.log(`EnvironmentVariables: ${JSON.stringify(process.env)}`);
+        console.log(`EnvironmentVariables: ${JSON.stringify(process.env)}`);
 
         console.log(`Retrieving secret ${fullSecretName}, from give params: ${secretName}:${secretKey || 'N/A'}`);
 
