@@ -9,14 +9,13 @@ provider:
     role:
       statements:
         - Effect: 'Allow'
+          Resource: '*'
           Action:
             - 'secretsmanager:GetResourcePolicy'
             - 'secretsmanager:GetSecretValue'
             - 'secretsmanager:DescribeSecret'
             - 'secretsmanager:ListSecretVersionIds'
             - 'secretsmanager:ListSecrets'
-          Resource:
-            - '*' 
   runtime: nodejs12.x
   environment:
     REGION: ${opt:region, 'us-east-1'}
