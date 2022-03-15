@@ -20,5 +20,22 @@
   "dependencies": {
     "@types/node": "^17.0.21",
     "typescript": "4.1.6"
+  },
+  "jest": {
+    "verbose": false,
+    "silent": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/lib/**",
+      "**/src/**"
+    ],
+    "coveragePathIgnorePatterns": [
+      "enums",
+      "providers",
+      "testing"
+    ]
   }
 }

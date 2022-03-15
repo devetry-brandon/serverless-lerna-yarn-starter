@@ -5,7 +5,7 @@ import { AdobeSignService } from '../../src/services/adobe-sign.service';
 
 describe('AdobeSignService', () => {
     function setup() {
-        const adobeApi = new AdobeSignApi();
+        const adobeApi = new AdobeSignApi(null);
         const service = new AdobeSignService(adobeApi);
 
         return { service, adobeApi };

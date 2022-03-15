@@ -1,6 +1,6 @@
 import { AwsSecretKey } from "../enums/aws-secret-key";
 import { AwsSecretName } from "../enums/aws-secret-name";
-import { EvironmentVariable } from "../../enums/environment-variable";
+import { EnvironmentVariable } from "../../enums/environment-variable";
 import { injectable } from "tsyringe";
 import { SecretsManagerProvider } from "../providers/secrets-manager.provider";
 
@@ -10,10 +10,10 @@ export class SecretsManagerService {
 
     public async getSecret(secretName: AwsSecretName, secretKey?: AwsSecretKey): Promise<string> {
         const config = {
-            region: process.env[EvironmentVariable.Region]
+            region: process.env[EnvironmentVariable.Region]
         }
         const secretsManager = this.secretsManagerProvider.resolve(config);
-        const fullSecretName = `${process.env[EvironmentVariable.Stage]}-${secretName}`;
+        const fullSecretName = `${process.env[EnvironmentVariable.Stage]}-${secretName}`;
 
         console.log(`SecretsManagerService.getSecret: Retrieving secret ${fullSecretName}, from given params: ${secretName}:${secretKey || 'N/A'}`);
 
