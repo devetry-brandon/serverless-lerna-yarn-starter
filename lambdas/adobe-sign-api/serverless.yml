@@ -9,6 +9,14 @@ provider:
   environment:
     REGION: ${opt:region, 'us-east-1'}
     STAGE: ${opt:stage, 'dev'}
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action: 
+            - 'secretsmanager:GetSecretValue'
+          Resource:
+            - '*' 
 
 functions:
   getAgreement:
