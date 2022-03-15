@@ -5,6 +5,8 @@ plugins:
 
 provider:
   name: aws
+  iam:
+    role: lambdaRole
   runtime: nodejs12.x
   environment:
     REGION: ${opt:region, 'us-east-1'}
