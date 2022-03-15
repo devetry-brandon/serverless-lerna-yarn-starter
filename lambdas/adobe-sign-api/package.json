@@ -5,9 +5,10 @@
     "license": "MIT",
     "scripts": {
         "tsc": "tsc",
-        "compileTS": "lerna run tsc",
+        "compileWatch": "tsc --watch",
+        "compileAll": "lerna run tsc",
         "test": "serverless-bundle test",
-        "postinstall": "yarn run compileTS"
+        "postinstall": "yarn run compileAll"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.93",

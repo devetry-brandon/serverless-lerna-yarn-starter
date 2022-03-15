@@ -1,11 +1,11 @@
 {
-  "name": "adobe-sign",
+  "name": "asu-core",
   "version": "1.0.0",
-  "description": "A package for maintaining interactions with Adobe Sign.",
+  "description": "A package for storing code that is common across all packages and lambdas.",
   "author": "devetry-brandon <brandon.pfeiffer@devetry.com>",
   "homepage": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter#readme",
   "license": "ISC",
-  "main": "lib/adobe-sign.js",
+  "main": "lib/asu-core.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -26,7 +26,7 @@
     "url": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter/issues"
   },
   "dependencies": {
-    "asu-core": "^1.0.0",
+    "aws-sdk": "^2.1093.0",
     "tsyringe": "^4.6.0"
   }
 }
