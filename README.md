@@ -117,6 +117,15 @@ We need to add a `tsc` command to the `scripts` node of the `package.json` file 
 ...
 ```
 
+**Add tsyringe dependency**
+This is used for dependency injection.
+
+``` json
+"dependencies": {
+  "tsyringe": "^4.6.0"
+}
+```
+
 **Add typescript entry point**
 
 Create a `some-package.ts` script in the `src` directory of the package. This script will be where we export any resources that we want to be visible to consumers of the package.

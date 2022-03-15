@@ -6,8 +6,9 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
+  environment:
+    REGION: ${opt:region, 'us-east-1'}
+    STAGE: ${opt:stage, 'dev'}
 
 functions:
   getAgreement:
