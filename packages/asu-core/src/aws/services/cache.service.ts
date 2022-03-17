@@ -2,6 +2,7 @@ import * as redis from 'redis';
 
 export class CacheService {
     public async getValue(key: string, retrieveValue: () => Promise<string>): Promise<string> {
+        console.log("top of cache service get value");
         let client = null;
         try {
             client = redis.createClient({ url: "redis://adobesigncache.dcp1ay.0001.use1.cache.amazonaws.com:6379"});
