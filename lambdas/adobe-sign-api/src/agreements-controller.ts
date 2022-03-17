@@ -4,6 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { container } from "tsyringe";
 
 export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    console.log("Top of controller");
     let service = container.resolve(AdobeSignService);
     let agreement = await service.getAgreement(event.pathParameters.id);
     return {
