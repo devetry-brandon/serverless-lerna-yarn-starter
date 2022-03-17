@@ -7,7 +7,6 @@ export class AdobeSignApi {
     constructor(private secretsManagerService: SecretsManagerService) {}
 
     public async getAgreement(id: string): Promise<Agreement> {
-        console.log("Top of get agreement in api");
         const integrationKey = await this.secretsManagerService.getSecret(
             AwsSecretName.AdobeSign,
             AwsSecretKey.AdobeSignIntegrationKey

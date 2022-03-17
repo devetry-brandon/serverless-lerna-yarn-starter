@@ -10,11 +10,9 @@ export class SecretsManagerService {
     constructor(private secretsManagerProvider: SecretsManagerProvider, private cacheService: CacheService) {}
 
     public async getSecret(secretName: AwsSecretName, secretKey?: AwsSecretKey): Promise<string> {
-        console.log("Top of getSecret");
         const cacheKey = `AWSSecret-${secretName}${secretKey !== undefined ? `-${secretKey}` : ''}`
 
         return this.cacheService.getValue(cacheKey, async (): Promise<string> => {
-            console.log("Top callback from cache");
             const config = {
                 region: process.env[EnvironmentVariable.Region]
             }

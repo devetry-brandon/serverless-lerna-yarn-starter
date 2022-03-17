@@ -2,7 +2,6 @@ import * as redis from 'redis';
 
 export class CacheService {
     public async getValue(key: string, retrieveValue: () => Promise<string>): Promise<string> {
-        console.log("top of cache service get value");
         let client = null;
         try {
             client = redis.createClient({ url: "redis://adobesigncache.dcp1ay.0001.use1.cache.amazonaws.com:6379"});
@@ -16,8 +15,7 @@ export class CacheService {
         if (client !== null) {
             try {
                 const cachedValue = await client.get(key);
-                console.log(`Cached value is: ${cachedValue}`);
-                if (cachedValue !== undefined) {
+                if (cachedValue !== null) {
                     return cachedValue;
                 }
             }
@@ -28,7 +26,7 @@ export class CacheService {
 
         const nonCachedValue = await retrieveValue();
 
-        if (client !== null) {
+        if (nonCachedValue !== null && client !== null) {
             try {
                 await client.set(key, nonCachedValue);
             }
