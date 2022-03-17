@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.1093.0",
+    "redis": "^4.0.4",
     "tsyringe": "^4.6.0"
   }
 }
