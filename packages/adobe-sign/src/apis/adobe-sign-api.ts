@@ -12,6 +12,7 @@ export class AdobeSignApi {
             AwsSecretName.AdobeSign,
             AwsSecretKey.AdobeSignIntegrationKey
         );
+        console.log(integrationKey.substring(0, 4));
         const agreement = new Agreement();
         agreement.id = id;
 
