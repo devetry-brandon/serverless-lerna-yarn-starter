@@ -1,4 +1,4 @@
-service: adobe-sign-api
+service: adobe-sign-api-2
 
 plugins:
   - serverless-bundle
