@@ -128,20 +128,23 @@ resources:
               - GroupId
         CacheSubnetGroupName:
           Ref: ServerlessCacheSubnetGroup
+  Outputs:
+    ServerlessSecurityGroup:
+      Description: "GroupId of the ServerlessSecurityGroup used by redis and lambdas accessing redis"
+      Value:
+        Fn::GetAtt:
+          - ServerlessSecurityGroup
+          - GroupId
+      Export:
+        Name: AdobeSign-ServerlessSecurityGroup-GroupId
+    PrivateSubnetA:
+      Description: "Ref of the PrivateSubnetA used by redis and lambdas accessing redis"
+      Value:
+        Ref: PrivateSubnetA
+      Export:
+        Name: AdobeSign-PrivateSubnetA-Ref
 
 custom:
   config:
     CACHE_INSTANCE_SIZE: cache.t2.micro
-
-Outputs:
-  ServerlessSecurityGroup:
-    Description: "GroupId of the ServerlessSecurityGroup used by redis and lambdas accessing redis"
-    Value: "Some value"
-    Export:
-      Name: AdobeSign-ServerlessSecurityGroup-GroupId
-  PrivateSubnetA:
-    Description: "Ref of the PrivateSubnetA used by redis and lambdas accessing redis"
-    Value: "Some Value"
-    Export:
-      Name: AdobeSign-PrivateSubnetA-Ref
   
