@@ -1,9 +1,8 @@
 import "reflect-metadata";
 import { AWSError, Request, SecretsManager, Service } from "aws-sdk";
-
-import { SecretsManagerProvider } from "../../../lib/aws/providers/secrets-manager.provider";
+import { SecretsManagerProvider } from "../../../src/aws/providers/secrets-manager.provider";
 import { Mock } from '../../../src/testing/mock-provider';
-import { AwsSecretKey, AwsSecretName, EnvironmentVariable, SecretsManagerService } from "../../../lib/asu-core";
+import { AwsSecretKey, AwsSecretName, EnvironmentVariable, SecretsManagerService } from "../../../src/asu-core";
 
 describe('SecretsManagerService', () => {
     const expectedRegion = 'us-east-1';
@@ -20,7 +19,7 @@ describe('SecretsManagerService', () => {
         const secretBody = { $response: null };
         if (secret !== undefined) {
             secretBody['SecretString'] = secret
-        };
+        }
         secretResponseObject.promise.mockResolvedValue(secretBody);
         awsSecretsManager.getSecretValue.mockReturnValue(secretResponseObject);
     };
