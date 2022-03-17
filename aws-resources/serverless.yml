@@ -1,4 +1,4 @@
-service: asobe-sign-common-aws-resources
+service: adobe-sign-common-aws-resources
 
 provider:
   name: aws
@@ -136,16 +136,12 @@ custom:
 Outputs:
   ServerlessSecurityGroup:
     Description: "GroupId of the ServerlessSecurityGroup used by redis and lambdas accessing redis"
-    Value:
-      Fn::GetAtt:
-        - ServerlessSecurityGroup
-        - GroupId
+    Value: "Some value"
     Export:
       Name: AdobeSign-ServerlessSecurityGroup-GroupId
   PrivateSubnetA:
     Description: "Ref of the PrivateSubnetA used by redis and lambdas accessing redis"
-    Value:
-      Ref: PrivateSubnetA
+    Value: "Some Value"
     Export:
       Name: AdobeSign-PrivateSubnetA-Ref
   
