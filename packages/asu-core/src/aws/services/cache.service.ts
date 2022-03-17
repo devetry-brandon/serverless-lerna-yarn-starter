@@ -16,6 +16,7 @@ export class CacheService {
         if (client !== null) {
             try {
                 const cachedValue = await client.get(key);
+                console.log(`Cached value is: ${cachedValue}`);
                 if (cachedValue !== undefined) {
                     return cachedValue;
                 }
