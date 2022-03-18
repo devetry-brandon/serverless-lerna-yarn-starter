@@ -11,6 +11,7 @@ module.exports = {
   ],
   coveragePathIgnorePatterns: [
     "enums",
+    "errors",
     "providers",
     "testing"
   ]

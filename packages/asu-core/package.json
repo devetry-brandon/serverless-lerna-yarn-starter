@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.1093.0",
+    "axios": "^0.26.1",
     "tsyringe": "^4.6.0"
   }
 }
