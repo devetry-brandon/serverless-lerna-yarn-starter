@@ -10,7 +10,7 @@ export class SecretsManagerService {
     constructor(private secretsManagerProvider: SecretsManagerProvider, private cacheService: CacheService) {}
 
     public async getSecret(secretName: AwsSecretName, secretKey?: AwsSecretKey): Promise<string> {
-        const cacheKey = `AWSSecret-${secretName}${secretKey !== undefined ? `-${secretKey}` : ''}`
+        const cacheKey = `AWSSecret-${secretName}${secretKey !== undefined ? `-${secretKey}` : ''}`;
 
         return this.cacheService.getValue(cacheKey, async (): Promise<string> => {
             const config = {

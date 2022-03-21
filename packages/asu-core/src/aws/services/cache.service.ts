@@ -1,10 +1,14 @@
-import * as redis from 'redis';
+import { TimeToLive } from '../enums/time-to-live';
+import { CacheProvider } from '../providers/cache.provider';
 
 export class CacheService {
-    public async getValue(key: string, retrieveValue: () => Promise<string>): Promise<string> {
+    constructor(private cacheProvider: CacheProvider) {}
+
+    public async getValue(key: string, retrieveValue: () => Promise<string>, timeToLive?: TimeToLive): Promise<string> {
         let client = null;
         try {
-            client = redis.createClient({ url: "redis://adobesigncache.dcp1ay.0001.use1.cache.amazonaws.com:6379"});
+            // TODO: Get url from env variable which will get it from Stack output
+            client = this.cacheProvider.resolve("redis://adobesigncache.dcp1ay.0001.use1.cache.amazonaws.com:6379")
             await client.connect();
         }
         catch (error) {
@@ -28,7 +32,7 @@ export class CacheService {
 
         if (nonCachedValue !== null && client !== null) {
             try {
-                await client.set(key, nonCachedValue);
+                await client.set(key, nonCachedValue, 'EX', timeToLive || TimeToLive.OneHour);
             }
             catch (error) {
                 console.log(`CacheService.getValue: Failed to set value for key: ${key}. Error: ${error}`);
