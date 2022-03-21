@@ -1,4 +1,4 @@
-service: adobe-sign-api-2
+service: adobe-sign-api
 
 plugins:
   - serverless-bundle
@@ -34,7 +34,7 @@ resources:
     lambdaRole:
       Type: AWS::IAM::Role
       Properties:
-        RoleName: AdobeSignApiLambdaRole2
+        RoleName: AdobeSignApiLambdaRole
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
