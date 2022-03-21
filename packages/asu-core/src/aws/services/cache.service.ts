@@ -1,8 +1,10 @@
 import "reflect-metadata"
+import { injectable } from "tsyringe";
 import { EnvironmentVariable } from '../../asu-core';
 import { TimeToLive } from '../enums/time-to-live';
 import { CacheProvider } from '../providers/cache.provider';
 
+@injectable()
 export class CacheService {
     constructor(private cacheProvider: CacheProvider) {}
 
