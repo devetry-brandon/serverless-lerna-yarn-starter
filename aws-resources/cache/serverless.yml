@@ -1,4 +1,4 @@
-service: adobe-sign-common-aws-resources
+service: adobe-sign-cache-resources
 
 provider:
   name: aws
@@ -143,6 +143,22 @@ resources:
         Ref: PrivateSubnetA
       Export:
         Name: AdobeSign-PrivateSubnetA-Ref
+    ElasticCacheClusterEndpoint:
+      Description: "The url of the created ElasticCacheCluster"
+      Value:
+        Fn::GetAtt:
+          - ElasticCacheCluster
+          - ConfigurationEndpoint.Address
+      Export:
+        Name: AdobeSign-ElasticCacheCluster-Endpoint
+    ElasticCacheClusterPort:
+      Description: "The port of the created ElasticCacheCluster"
+      Value:
+        Fn::GetAtt:
+          - ElasticCacheCluster
+          - ConfigurationEndpoint.Port
+      Export:
+        Name: AdobeSign-ElasticCacheCluster-Port
 
 custom:
   config:

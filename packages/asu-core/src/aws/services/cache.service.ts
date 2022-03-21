@@ -1,3 +1,5 @@
+import "reflect-metadata"
+import { EnvironmentVariable } from '../../asu-core';
 import { TimeToLive } from '../enums/time-to-live';
 import { CacheProvider } from '../providers/cache.provider';
 
@@ -7,8 +9,7 @@ export class CacheService {
     public async getValue(key: string, retrieveValue: () => Promise<string>, timeToLive?: TimeToLive): Promise<string> {
         let client = null;
         try {
-            // TODO: Get url from env variable which will get it from Stack output
-            client = this.cacheProvider.resolve("redis://adobesigncache.dcp1ay.0001.use1.cache.amazonaws.com:6379")
+            client = this.cacheProvider.resolve(`redis://${process.env[EnvironmentVariable.CacheEndpoint]}:${process.env[EnvironmentVariable.CachePort]}`);
             await client.connect();
         }
         catch (error) {

@@ -9,6 +9,8 @@ provider:
   environment:
     REGION: ${opt:region, 'us-east-1'}
     STAGE: ${opt:stage, 'dev'}
+    CACHE_ENDPOINT: { 'Fn::ImportValue': 'AdobeSign-ElasticCacheCluster-Endpoint' }
+    CACHE_PORT: { 'Fn::ImportValue': 'AdobeSign-ElasticCacheCluster-Port' }
 
 functions:
   getAgreement:
