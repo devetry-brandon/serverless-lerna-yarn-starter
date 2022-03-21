@@ -9,7 +9,7 @@ export class CacheService {
     public async getValue(key: string, retrieveValue: () => Promise<string>, timeToLive?: TimeToLive): Promise<string> {
         let client = null;
         try {
-            client = this.cacheProvider.resolve(`redis://${process.env[EnvironmentVariable.CacheEndpoint]}:${process.env[EnvironmentVariable.CachePort]}`);
+            client = this.cacheProvider.resolve(`redis://${process.env[EnvironmentVariable.CacheEndpoint]}:6379`);
             await client.connect();
         }
         catch (error) {
