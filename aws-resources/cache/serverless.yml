@@ -151,14 +151,6 @@ resources:
           - ConfigurationEndpoint.Address
       Export:
         Name: AdobeSign-ElasticCacheCluster-Endpoint
-    ElasticCacheClusterPort:
-      Description: "The port of the created ElasticCacheCluster"
-      Value:
-        Fn::GetAtt:
-          - ElasticCacheCluster
-          - ConfigurationEndpoint.Port
-      Export:
-        Name: AdobeSign-ElasticCacheCluster-Port
 
 custom:
   config:
