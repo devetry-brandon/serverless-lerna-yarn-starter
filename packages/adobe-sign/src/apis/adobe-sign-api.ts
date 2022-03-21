@@ -46,10 +46,12 @@ export class AdobeSignApi {
 
     private static handleAdobeApiErrors(error: ApiError|AxiosError) {
         if (error instanceof ApiError) {
-            // If already an ApiError (e.g. InternalApiError), forward error
+            // If already an ApiError (e.g. InternalApiError), log and forward error
+            console.log(error.message);
             throw error;
         }
 
-        throw new AdobeApiError(error.response.status, error.response.data.message)
+        console.log('AdobeSignApi error: ' + error.response.data.message);
+        throw new AdobeApiError(error.response.status, error.response.data.message);
     }
 }

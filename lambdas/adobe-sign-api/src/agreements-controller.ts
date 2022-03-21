@@ -16,6 +16,9 @@ export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGate
         const agreement = await service.getAgreement(event.pathParameters.id);
         return formatResponse(200, JSON.stringify(agreement))
     } catch (error) {
-        return formatResponse(error.statusCode ?? 500, JSON.stringify({error: error.message}));
+        let errorCode = error.statusCode === 404 ? 404 : 500;
+        let errorMessage = errorCode === 404 ? `Agreement with ID: ${event.pathParameters.id} does not exist.`
+            : 'Internal Service Error';
+        return formatResponse(errorCode, JSON.stringify({error: errorMessage}));
     }
 }

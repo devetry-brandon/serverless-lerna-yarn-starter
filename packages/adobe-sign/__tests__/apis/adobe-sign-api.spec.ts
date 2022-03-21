@@ -30,8 +30,8 @@ describe('AdobeSignAPI', () => {
                 hasFormFieldData: true,
             }
 
-            mockAxios.get.mockReturnValue(Promise.resolve({data: mockData}));
-            let apiSpy = jest.spyOn(adobeApi as any, 'getAgreement')
+            mockAxios.get.mockResolvedValue({data: mockData});
+            let apiSpy = jest.spyOn(adobeApi, 'getAgreement')
 
             // Act
             let result = await adobeApi.getAgreement(mockData.id);
@@ -44,7 +44,7 @@ describe('AdobeSignAPI', () => {
         it('should throw an InternalApiError if the HTTP client cannot be created', async () => {
             // Arrange
             let { adobeApi, secretsManagerService } = setup();
-            secretsManagerService.getSecret.mockReturnValue(Promise.reject('Test error'));
+            secretsManagerService.getSecret.mockRejectedValue('Test error');
 
             // Assert
             await expect(async () => {
@@ -56,14 +56,14 @@ describe('AdobeSignAPI', () => {
         it('should throw an AdobeApiError if API request failed', async () => {
             // Arrange
             let { adobeApi, mockAxios } = setup();
-            mockAxios.get.mockReturnValue(Promise.reject({
+            mockAxios.get.mockRejectedValue({
                 response: {
                     status: 401,
                     data: {
                         message: 'Test error'
                     }
                 }
-            }));
+            });
 
             // Assert
             await expect(async () => {

@@ -25,7 +25,7 @@ describe('AdobeSignService', () => {
                 hasFormFieldData: true,
             });
 
-            let apiSpy = jest.spyOn(adobeApi as any, 'getAgreement').mockResolvedValue(agreement);
+            let apiSpy = jest.spyOn(adobeApi, 'getAgreement').mockResolvedValue(agreement);
 
             // Act
             let result = await service.getAgreement(expectedId);
