@@ -15,12 +15,12 @@ export class Agreement {
     status: string;
     hasFormFieldData: boolean;
 
-    constructor({id, name, groupId, type, status, hasFormFieldData}: ResponseData) {
-        this.id = id;
-        this.name = name;
-        this.groupId = groupId;
-        this.type = type;
-        this.status = status;
-        this.hasFormFieldData = hasFormFieldData;
+    constructor(data: ResponseData) {
+        this.id = data.id;
+        this.name = data.name;
+        this.groupId = data.groupId;
+        this.type = data.type;
+        this.status = data.status;
+        this.hasFormFieldData = data.hasFormFieldData;
     }
 }

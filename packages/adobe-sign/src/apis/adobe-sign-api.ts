@@ -14,13 +14,11 @@ export class AdobeSignApi {
     private async getHttpClient(): Promise<Axios> {
         if (!this.httpClient) {
             try {
-                console.log('Fetching integration key from secrets manager');
                 const integrationKey = await this.secretsManagerService.getSecret(
                     AwsSecretName.AdobeSign,
                     AwsSecretKey.AdobeSignIntegrationKey
                 );
 
-                console.log('Creating axios instance');
                 this.httpClient = this.axiosProvider.resolve({
                     //@todo get Base URL from cache/secretsManager
                     baseURL: 'https://api.na3.adobesign.com/api/rest/v6',
@@ -39,7 +37,6 @@ export class AdobeSignApi {
     public async getAgreement(id: string): Promise<Agreement> {
         try {
             const httpClient = await this.getHttpClient();
-            console.log('Fetching agreement from AdobeSign');
             const agreementRes = await httpClient.get(`/agreements/${id}`);
             return new Agreement(agreementRes.data);
         } catch ( err ) {

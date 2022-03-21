@@ -30,7 +30,7 @@ describe('AdobeSignAPI', () => {
                 hasFormFieldData: true,
             }
 
-            mockAxios.get.mockResolvedValue(Promise.resolve({data: mockData}));
+            mockAxios.get.mockReturnValue(Promise.resolve({data: mockData}));
             let apiSpy = jest.spyOn(adobeApi as any, 'getAgreement')
 
             // Act
