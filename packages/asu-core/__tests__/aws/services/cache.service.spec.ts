@@ -2,6 +2,7 @@ import { CacheProvider } from '../../../src/aws/providers/cache.provider';
 import { CacheService } from '../../../src/aws/services/cache.service';
 import { Mock } from "../../../src/testing/mock-provider";
 import * as redis from 'redis';
+import { TimeToLive } from '../../../src/aws/enums/time-to-live';
 
 describe('CacheService', () => {
     const setup = () => {
@@ -104,6 +105,25 @@ describe('CacheService', () => {
             expect(result).toBe(expectedValue);
             expect(cacheClient.set.mock.calls[0][0]).toBe(expectedKey);
             expect(cacheClient.set.mock.calls[0][1]).toBe(expectedValue);
+            expect(cacheClient.set.mock.calls[0][2]).toBe('EX');
+            expect(cacheClient.set.mock.calls[0][3]).toBe(TimeToLive.OneHour);
+        });
+
+        it('should set value with given TimeToLive', async () => {
+            // Arrange
+            const { service, cacheClient } = setup();
+            const expectedKey = 'key';
+            const expectedValue = 'value';
+
+            cacheClient.get.mockResolvedValue(null);
+
+            // Act
+            const result = await service.getValue(expectedKey, async () => {
+                return expectedValue;
+            }, TimeToLive.FiveMinutes);
+
+            // Assert
+            expect(cacheClient.set.mock.calls[0][3]).toBe(TimeToLive.FiveMinutes);
         });
 
         it('should still return value when cache set throws exception', async () => {
