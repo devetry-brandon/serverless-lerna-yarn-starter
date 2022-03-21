@@ -148,7 +148,7 @@ resources:
       Value:
         Fn::GetAtt:
           - ElasticCacheCluster
-          - ConfigurationEndpoint.Address
+          - RedisEndpoint.Address
       Export:
         Name: AdobeSign-ElasticCacheCluster-Endpoint
 
