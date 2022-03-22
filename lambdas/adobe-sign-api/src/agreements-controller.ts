@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import "reflect-metadata";
 import { AdobeSignService } from "adobe-sign";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";

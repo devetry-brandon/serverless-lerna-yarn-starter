@@ -9,11 +9,17 @@ provider:
   environment:
     REGION: ${opt:region, 'us-east-1'}
     STAGE: ${opt:stage, 'dev'}
+    CACHE_ENDPOINT: { 'Fn::ImportValue': 'AdobeSign-ElasticCacheCluster-Endpoint' }
 
 functions:
   getAgreement:
     role: lambdaRole
     handler: lib/agreements-controller.getAgreement
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
     events:
       - http:
           path: agreements/{id}
