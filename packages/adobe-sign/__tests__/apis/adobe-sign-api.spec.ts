@@ -8,7 +8,7 @@ import {AdobeApiError} from "../../src/apis/errors/adobe-api-error";
 
 describe('AdobeSignAPI', () => {
     function setup() {
-        const secretsManagerService = Mock(new SecretsManagerService(null));
+        const secretsManagerService = Mock(new SecretsManagerService(null, null));
         const mockAxios = Mock(new Axios());
         const axiosProvider = Mock(new AxiosProvider())
         axiosProvider.resolve.mockReturnValue(mockAxios);
