@@ -3,6 +3,8 @@ import { AWSError, Request, SecretsManager, Service } from "aws-sdk";
 import { SecretsManagerProvider } from "../../../src/aws/providers/secrets-manager.provider";
 import { Mock } from '../../../src/testing/mock-provider';
 import { AwsSecretKey, AwsSecretName, EnvironmentVariable, SecretsManagerService } from "../../../src/asu-core";
+import { CacheService } from "../../../src/aws/services/cache.service";
+import { valueNotCached, valueCached } from "../../../src/testing/mocked-cache-helper-functions";
 
 describe('SecretsManagerService', () => {
     const expectedRegion = 'us-east-1';
@@ -27,22 +29,24 @@ describe('SecretsManagerService', () => {
     const setup = () => {
         const secretsManagerProvider = Mock(new SecretsManagerProvider());
         const awsSecretsManager = Mock(new SecretsManager());
-        const service = new SecretsManagerService(secretsManagerProvider);
+        const cacheService = Mock(new CacheService(null));
+        const service = new SecretsManagerService(secretsManagerProvider, cacheService);
 
         secretsManagerProvider.resolve.mockReturnValue(awsSecretsManager);
 
-        return { service, awsSecretsManager, secretsManagerProvider };
+        return { service, awsSecretsManager, secretsManagerProvider, cacheService };
     }
 
     describe('getSecret', () => {
         it('should return simple secret from the correct region and secret name', async () => {
             // Arrange
-            const { service, awsSecretsManager, secretsManagerProvider } = setup();
+            const { service, awsSecretsManager, secretsManagerProvider, cacheService } = setup();
             const expectedSecretString = '1234';
             const expectedSecretName = AwsSecretName.AdobeSign;
             const expectedFullSecretName = `${expectedStage}-${expectedSecretName}`;
             
             secretsManagerReturns(awsSecretsManager, expectedSecretString);
+            valueNotCached(cacheService);
 
             // Act
             const result = await service.getSecret(expectedSecretName);
@@ -55,13 +59,14 @@ describe('SecretsManagerService', () => {
 
         it('should return secret sub key from json secret', async () => {
             // Arrange
-            const { service, awsSecretsManager } = setup();
+            const { service, awsSecretsManager, cacheService } = setup();
             const expectedSecretString = '1234';
             const expectedSecretObject = {
                 [AwsSecretKey.AdobeSignIntegrationKey]: expectedSecretString
             };
             
             secretsManagerReturns(awsSecretsManager, JSON.stringify(expectedSecretObject));
+            valueNotCached(cacheService);
 
             // Act
             const result = await service.getSecret(AwsSecretName.AdobeSign, AwsSecretKey.AdobeSignIntegrationKey);
@@ -72,9 +77,10 @@ describe('SecretsManagerService', () => {
 
         it('should return null when SecretString is undefined', async () => {
             // Arrange
-            const { service, awsSecretsManager } = setup();
+            const { service, awsSecretsManager, cacheService } = setup();
             
             secretsManagerReturns(awsSecretsManager);
+            valueNotCached(cacheService);
 
             // Act
             const result = await service.getSecret(AwsSecretName.AdobeSign, AwsSecretKey.AdobeSignIntegrationKey);
@@ -85,10 +91,11 @@ describe('SecretsManagerService', () => {
 
         it('should return null when sub key does not exist in json secret', async () => {
             // Arrange
-            const { service, awsSecretsManager } = setup();
+            const { service, awsSecretsManager, cacheService } = setup();
             const expectedSecretObject = {};
             
             secretsManagerReturns(awsSecretsManager, JSON.stringify(expectedSecretObject));
+            valueNotCached(cacheService);
 
             // Act
             const result = await service.getSecret(AwsSecretName.AdobeSign, AwsSecretKey.AdobeSignIntegrationKey);
@@ -99,15 +106,32 @@ describe('SecretsManagerService', () => {
 
         it('should return null when json secret cannot be parsed', async () => {
             // Arrange
-            const { service, awsSecretsManager } = setup();
+            const { service, awsSecretsManager, cacheService } = setup();
             
             secretsManagerReturns(awsSecretsManager, '{');
+            valueNotCached(cacheService);
 
             // Act
             const result = await service.getSecret(AwsSecretName.AdobeSign, AwsSecretKey.AdobeSignIntegrationKey);
 
             // Assert
             expect(result).toBeNull();
+        });
+
+        it('should return cached secret', async () => {
+            // Arrange
+            const { service, awsSecretsManager, cacheService } = setup();
+            const expectedSecretString = '1234';
+            const expectedSecretName = AwsSecretName.AdobeSign;
+            
+            secretsManagerReturns(awsSecretsManager, expectedSecretString);
+            valueCached(cacheService, expectedSecretString);
+
+            // Act
+            const result = await service.getSecret(expectedSecretName);
+
+            // Assert
+            expect(result).toBe(expectedSecretString);
         });
     });
 });

@@ -254,8 +254,6 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
 
 functions:
   get:
