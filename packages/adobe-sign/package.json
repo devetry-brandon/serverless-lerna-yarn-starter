@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "asu-core": "^1.0.0",
+    "axios": "^0.26.1",
     "tsyringe": "^4.6.0"
   }
 }

@@ -5,7 +5,7 @@ import { AdobeSignService } from '../../src/services/adobe-sign.service';
 
 describe('AdobeSignService', () => {
     function setup() {
-        const adobeApi = new AdobeSignApi(null);
+        const adobeApi = new AdobeSignApi(null, null);
         const service = new AdobeSignService(adobeApi);
 
         return { service, adobeApi };
@@ -15,10 +15,15 @@ describe('AdobeSignService', () => {
         it('should call the AdobeSignApi with the given id', async () => {
             // Arrange
             let { service, adobeApi } = setup();
-            let expectedId = '8e902a9e-1e2a-4bc5-8399-adaf191fe76f';
-            let agreement = new Agreement();
-
-            agreement.id = expectedId;
+            let expectedId = 'CBJCHBCAABAAN24SWUnGHW-o_NaT5i3O5lKuHiccQ2GP';
+            let agreement = new Agreement({
+                id: expectedId,
+                name: '[DEMO USE ONLY] Agreement Test 001',
+                groupId: 'CBJCHBCAABAACnRhBD9pKDAfZ55583n-4WOlwlvI_RGM',
+                type: 'AGREEMENT',
+                status: 'SIGNED',
+                hasFormFieldData: true,
+            });
 
             let apiSpy = jest.spyOn(adobeApi, 'getAgreement').mockResolvedValue(agreement);
 
