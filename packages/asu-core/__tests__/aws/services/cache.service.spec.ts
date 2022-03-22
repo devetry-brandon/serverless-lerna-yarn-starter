@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { CacheProvider } from '../../../src/aws/providers/cache.provider';
 import { CacheService } from '../../../src/aws/services/cache.service';
 import { Mock } from "../../../src/testing/mock-provider";
@@ -24,13 +25,16 @@ describe('CacheService', () => {
 
             cacheClient.get.mockResolvedValue(expectedValue);
 
-            // Act
-            const result = await service.getValue(expectedKey, async () => {
+            const mockCallback = jest.fn(async () => {
                 return null;
             });
 
+            // Act
+            const result = await service.getValue(expectedKey, mockCallback);
+
             // Assert
             expect(result).toBe(expectedValue);
+            expect(mockCallback).toHaveBeenCalledTimes(0);
         });
 
         it('should call given callback when cache fails to connect', async () => {
@@ -43,13 +47,16 @@ describe('CacheService', () => {
                 throw 'connection timed out';
             });
 
-            // Act
-            const result = await service.getValue(expectedKey, async () => {
+            const mockCallback = jest.fn(async () => {
                 return expectedValue;
             });
 
+            // Act
+            const result = await service.getValue(expectedKey, mockCallback);
+
             // Assert
             expect(result).toBe(expectedValue);
+            expect(mockCallback).toHaveBeenCalled();
         });
 
         it('should call given callback when cache get returns null', async () => {
@@ -60,13 +67,16 @@ describe('CacheService', () => {
 
             cacheClient.get.mockResolvedValue(null);
 
-            // Act
-            const result = await service.getValue(expectedKey, async () => {
+            const mockCallback = jest.fn(async () => {
                 return expectedValue;
             });
 
+            // Act
+            const result = await service.getValue(expectedKey, mockCallback);
+
             // Assert
             expect(result).toBe(expectedValue);
+            expect(mockCallback).toHaveBeenCalled();
         });
 
         it('should call given callback when cache get throws exception', async () => {
@@ -79,13 +89,16 @@ describe('CacheService', () => {
                 throw 'Failed to get value';
             });
 
-            // Act
-            const result = await service.getValue(expectedKey, async () => {
+            const mockCallback = jest.fn(async () => {
                 return expectedValue;
             });
 
+            // Act
+            const result = await service.getValue(expectedKey, mockCallback);
+
             // Assert
             expect(result).toBe(expectedValue);
+            expect(mockCallback).toHaveBeenCalled();
         });
 
         it('should set value if key was not previously cached', async () => {
@@ -103,10 +116,7 @@ describe('CacheService', () => {
 
             // Assert
             expect(result).toBe(expectedValue);
-            expect(cacheClient.set.mock.calls[0][0]).toBe(expectedKey);
-            expect(cacheClient.set.mock.calls[0][1]).toBe(expectedValue);
-            expect(cacheClient.set.mock.calls[0][2]).toBe('EX');
-            expect(cacheClient.set.mock.calls[0][3]).toBe(TimeToLive.OneHour);
+            expect(cacheClient.set).toHaveBeenCalledWith(expectedKey, expectedValue, 'EX', TimeToLive.OneHour);
         });
 
         it('should set value with given TimeToLive', async () => {
@@ -134,7 +144,7 @@ describe('CacheService', () => {
 
             cacheClient.get.mockResolvedValue(null);
             cacheClient.set.mockImplementation(() => {
-                throw 'Failed to get value';
+                throw 'Failed to set value';
             });
 
             // Act
