@@ -18,7 +18,7 @@ describe('AdobeSignAPI', () => {
     }
 
     describe('getAgreement', () => {
-        it('should be called with the given id and return Agreement object', async () => {
+        it('should make a GET request with the given id and return Agreement object', async () => {
             // Arrange
             let { adobeApi, mockAxios } = setup();
             const mockData = {
@@ -31,13 +31,12 @@ describe('AdobeSignAPI', () => {
             }
 
             mockAxios.get.mockResolvedValue({data: mockData});
-            let apiSpy = jest.spyOn(adobeApi, 'getAgreement')
 
             // Act
             let result = await adobeApi.getAgreement(mockData.id);
 
             // Assert
-            expect(apiSpy).toBeCalledWith(mockData.id);
+            expect(mockAxios.get).toBeCalledWith('/agreements/' + mockData.id);
             expect(result).toMatchObject(mockData);
         });
 
