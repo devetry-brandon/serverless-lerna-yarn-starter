@@ -36,7 +36,7 @@ Run test to make sure project is setup correctly:
 
 ``` bash
 $ cd lambdas/adobe-sign-api
-$ serverless invoke local -f getAgreement --data '{ "pathParameters": {"id":"P50WXIl6PUlonrSH"}}'
+$ serverless invoke local -f getAgreement --data '{ "pathParameters": {"id":"CBJCHBCAABAAN24SWUnGHW-o_NaT5i3O5lKuHiccQ2GP"}}' --region us-east-2
 ```
 
 You should see the following output, or similar:

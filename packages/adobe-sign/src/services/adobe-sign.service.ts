@@ -9,4 +9,8 @@ export class AdobeSignService {
     public async getAgreement(id: string): Promise<Agreement> {
         return await this.adobeSignApi.getAgreement(id);
     }
+
+    public async getAgreementFormData(id: string): Promise<{ [name: string]: string }> {
+        return {};
+    }
 }
