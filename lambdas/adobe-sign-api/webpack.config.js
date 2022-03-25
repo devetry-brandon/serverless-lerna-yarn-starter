@@ -1,10 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  entry: './lib/agreements-controller.js',
+  entry: {
+    'agreements-controller': './lib/agreements-controller.js'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'agreements-controller.js',
+    filename: '[name].js',
     libraryTarget: 'commonjs2',
   },
   target: 'node',

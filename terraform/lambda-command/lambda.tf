@@ -72,6 +72,10 @@ resource "null_resource" "mono_repo_install_and_compile" {
     working_dir = "./"
     command = "yarn && yarn run lerna run tsc"
   }
+
+  triggers = {
+    build_number = "${timestamp()}"
+  }
 }
 
 resource "null_resource" "lambda_build" {
@@ -83,6 +87,10 @@ resource "null_resource" "lambda_build" {
   depends_on = [
     null_resource.mono_repo_install_and_compile
   ]
+
+  triggers = {
+    build_number = "${timestamp()}"
+  }
 }
 
 data "archive_file" "lambda_zip" {
@@ -109,6 +117,11 @@ resource "aws_lambda_function" "lambda" {
   depends_on = [
     data.archive_file.lambda_zip
   ]
+
+  vpc_config {
+    subnet_ids         = ["subnet-0780981f1aebe8cec"]
+    security_group_ids = ["sg-00dd4842628191905"]
+  }
 
   environment {
     variables = var.environment_variables
