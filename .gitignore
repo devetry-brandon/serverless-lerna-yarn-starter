@@ -10,6 +10,15 @@ jspm_packages
 
 **/lib
 
+**/dist
+
 .DS_Store
 
 coverage
+
+*.zip
+
+*.backup
+*.tfstate
+.terraform/
+.terraform.lock.hcl

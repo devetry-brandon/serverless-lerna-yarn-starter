@@ -5,6 +5,7 @@
   "author": "devetry-brandon <brandon.pfeiffer@devetry.com>",
   "homepage": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter#readme",
   "license": "ISC",
+  "private": true,
   "main": "lib/adobe-sign.js",
   "directories": {
     "lib": "lib",

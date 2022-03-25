@@ -3,16 +3,19 @@
     "version": "0.0.1",
     "main": "lib/handler.js",
     "license": "MIT",
+    "private": true,
     "scripts": {
         "tsc": "tsc",
         "compileWatch": "tsc --watch",
-        "compileAll": "lerna run tsc",
-        "test": "serverless-bundle test",
-        "postinstall": "yarn run compileAll"
+        "compileAll": "yarn run lerna run tsc",
+        "test": "serverless-bundle test"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.93",
-        "serverless-bundle": "^1.9.0"
+        "lerna": "^4.0.0",
+        "serverless-bundle": "^1.9.0",
+        "webpack": "^5.70.0",
+        "webpack-cli": "^4.9.2"
     },
     "dependencies": {
         "adobe-sign": "^1.0.0",
