@@ -15,6 +15,7 @@ module.exports = {
     "enums",
     "errors",
     "providers",
-    "testing"
+    "testing",
+    "migrations"
   ]
 };
