@@ -8,6 +8,7 @@ resources:
     AdobeSignRDS:
       Type: AWS::RDS::DBInstance
       Properties:
+        DBName: 'adobesign${opt:stage}'
         AllocatedStorage: '100'
         DBInstanceClass: db.t2.small
         Engine: MySQL
@@ -17,5 +18,6 @@ resources:
         PubliclyAccessible: true
         VPCSecurityGroups: 
           - { 'Fn::ImportValue': 'AdobeSign-RDSSecurityGroup-GroupId' }
+        DBSubnetGroupName: { 'Fn::ImportValue': 'AdobeSign-RDSDBSubnetGroup-Ref' }
 
     

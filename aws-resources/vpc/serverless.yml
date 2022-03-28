@@ -1,7 +1,8 @@
-service: adobe-sign-cache-resources
+service: adobe-sign-vpc
 
 provider:
   name: aws
+  region: ${opt:region, 'us-west-2'}
 
 resources:
   Resources:
@@ -9,6 +10,8 @@ resources:
       Type: AWS::EC2::VPC
       Properties:
         CidrBlock: "10.0.0.0/16"
+        EnableDnsHostnames: true
+        EnableDnsSupport: true
     IP:
       Type: AWS::EC2::EIP
       Properties:
@@ -37,15 +40,23 @@ resources:
       Properties:
         VpcId:
           Ref: VPC
-        AvailabilityZone: ${self:provider.region}a
+        AvailabilityZone: ${opt:region}a
         CidrBlock: "10.0.1.0/24"
+    PrivateSubnetB:
+      DependsOn: VPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: VPC
+        AvailabilityZone: ${opt:region}b
+        CidrBlock: "10.0.3.0/24"
     PublicSubnetA:
       DependsOn: VPC
       Type: AWS::EC2::Subnet
       Properties:
         VpcId:
           Ref: VPC
-        AvailabilityZone: ${self:provider.region}a
+        AvailabilityZone: ${opt:region}a
         CidrBlock: "10.0.2.0/24"
     PrivateRouteTable:
       Type: AWS::EC2::RouteTable
@@ -126,6 +137,13 @@ resources:
         Description: "Cache Subnet Group"
         SubnetIds:
         - Ref: PrivateSubnetA
+    RDSDBSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupDescription: "RDS Subnet Group"
+        SubnetIds:
+        - Ref: PublicSubnetA
+        - Ref: PrivateSubnetB
   Outputs:
     ServerlessStorageSecurityGroup:
       Description: "GroupId of the ServerlessStorageSecurityGroup for redis"
@@ -163,4 +181,10 @@ resources:
           - GroupId
       Export:
         Name: AdobeSign-RDSSecurityGroup-GroupId
+    RDSDBSubnetGroup:
+      Description: "Ref of the RDSDBSubnetGroup"
+      Value:
+        Ref: RDSDBSubnetGroup
+      Export:
+        Name: AdobeSign-RDSDBSubnetGroup-Ref
   
