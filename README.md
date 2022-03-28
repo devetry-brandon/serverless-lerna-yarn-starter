@@ -160,6 +160,12 @@ export function packageName(): string {
 export * from "./services/adobe-sign.service";
 ```
 
+**Change directory**
+
+``` bash
+$ cd packages/some-package
+```
+
 **Install Dependencies**
 
 ``` bash
@@ -170,7 +176,7 @@ $ yarn
 Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
 
 ``` bash
-$ lerna run tsc
+$ yarn tsc
 ```
 
 **Add package as dependency to another package**
