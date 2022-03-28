@@ -1,0 +1,30 @@
+{
+  "name": "adobe-sign-data",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "devetry-brandon <brandon.pfeiffer@devetry.com>",
+  "homepage": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter#readme",
+  "license": "ISC",
+  "main": "lib/adobe-sign-data.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devetry-brandon/serverless-lerna-yarn-starter.git"
+  },
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter/issues"
+  },
+  "dependencies": {
+    "tsyringe": "^4.6.0"
+  }
+}

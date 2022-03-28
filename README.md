@@ -160,6 +160,12 @@ export function packageName(): string {
 export * from "./services/adobe-sign.service";
 ```
 
+**Install Dependencies**
+
+``` bash
+$ yarn
+```
+
 **Compile**
 Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
 
