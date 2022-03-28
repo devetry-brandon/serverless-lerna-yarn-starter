@@ -1,0 +1,21 @@
+service: adobe-sign-database
+
+provider:
+  name: aws
+
+resources:
+  Resources:
+    AdobeSignRDS:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        AllocatedStorage: '100'
+        DBInstanceClass: db.t2.small
+        Engine: MySQL
+        Iops: 1000
+        MasterUsername: root
+        MasterUserPassword: password
+        PubliclyAccessible: true
+        VPCSecurityGroups: 
+          - { 'Fn::ImportValue': 'AdobeSign-RDSSecurityGroup-GroupId' }
+
+    
