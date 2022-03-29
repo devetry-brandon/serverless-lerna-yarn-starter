@@ -1,7 +1,7 @@
-import { Pool } from "mysql2";
+import { Pool } from "mysql2/promise";
 
 export function getMockDB(): jest.Mocked<Pool> {
   return {
-    execute: jest.fn()
+    query: jest.fn()
   } as unknown as jest.Mocked<Pool>;
 }

@@ -18,5 +18,6 @@ module.exports = {
     "testing",
     "migrations",
     "models"
-  ]
+  ],
+  testPathIgnorePatterns: ["/node_modules/", "/mocks/"]
 };

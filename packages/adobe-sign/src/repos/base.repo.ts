@@ -1,37 +1,22 @@
-import { Pool } from "mysql2";
+import { Pool } from "mysql2/promise";
 import { MysqlConnectionProvider } from "../providers/mysql-connection.provider";
 
 export abstract class BaseRepo {
-  private conn: Pool;
-
   constructor(private connectionProvider: MysqlConnectionProvider) {}
 
-  protected query(query: string, params: string[] | Object): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      try {
-        if (this.conn === undefined) {
-          this.conn = this.connectionProvider.resolve();
-        }
-      }
-      catch(error) {
-        console.log(`BaseRepo.execute: Error while connecting to database.`)
-        throw error;
-      }
-      
-      try {
-        this.conn.query(query, params, (error, results) => {
-          if (error) {
-            console.log(`BaseRepo.execute: Trouble executing sql. Sql: ${query}`);
-            reject(error);
-          }
-  
-          resolve(results);
-        });
-      }
-      catch (error) {
-        console.log(`BaseRepo.execute: Trouble executing sql. Sql: ${query}`);
-        reject(error);
-      }
-    });
+  protected getConnection(): Pool {
+    return this.connectionProvider.resolve();
+  }
+
+  protected async query<T>(query: string, params: string[] | Object): Promise<T[]> {
+    const conn = this.getConnection();
+
+    const results = await conn.query(query, params);
+
+    if (!Array.isArray(results)) {
+      throw new Error(`Result of query is not an array.`);
+    }
+
+    return results as unknown as T[];
   }
 }

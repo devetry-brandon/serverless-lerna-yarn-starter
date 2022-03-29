@@ -1,16 +1,16 @@
-import { createPool, Pool } from "mysql2";
+import * as mysql from "mysql2/promise";
 import { singleton } from "tsyringe";
 
 @singleton()
 export class MysqlConnectionProvider {
-  private pool: Pool;
+  private pool: mysql.Pool;
 
-  resolve(): Pool {
+  resolve(): mysql.Pool {
     if (this.pool != undefined) {
       return this.pool;
     }
 
-    return createPool({
+    return mysql.createPool({
       connectionLimit: parseInt(process.env.ADOBE_SIGN_DB_CONNECTION_LIMIT),
       host: process.env.ADOBE_SIGN_DB_HOST,
       user: process.env.ADOBE_SIGN_DB_USER,
