@@ -309,7 +309,7 @@ We use npm package `db-migrate` to deploy changes to our various databases.
 
 ### Create migration
 
-Use this command to generate a migration script in `../packages/asobe-sign-data/migrations`.
+Use this command to generate a migration script in `../packages/adobe-sign/migrations`.
 
 ``` bash
 $ cd packages/adobe-sign
