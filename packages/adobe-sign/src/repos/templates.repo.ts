@@ -16,7 +16,7 @@ export class TemplatesRepo extends BaseRepo {
       FROM templates
       WHERE id = ?;
     `;
-    let templates = await this.execute(sql, [id]);
+    let templates = await this.query(sql, [id]);
 
     if (templates.length === 0) {
       throw new NotFoundError(`No template found with id: ${id}`);
@@ -31,7 +31,7 @@ export class TemplatesRepo extends BaseRepo {
       FROM template
       WHERE adobeSignId = ?;
     `;
-    let templates = await this.execute(sql, [id]);
+    let templates = await this.query(sql, [id]);
 
     if (templates.length === 0) {
       throw new NotFoundError(`No template found with adobeSignId: ${id}`);

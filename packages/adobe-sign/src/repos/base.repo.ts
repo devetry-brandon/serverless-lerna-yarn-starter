@@ -6,7 +6,7 @@ export abstract class BaseRepo {
 
   constructor(private connectionProvider: MysqlConnectionProvider) {}
 
-  protected execute(query: string, params: string[] | Object): Promise<any> {
+  protected query(query: string, params: string[] | Object): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       try {
         if (this.conn === undefined) {
@@ -21,6 +21,7 @@ export abstract class BaseRepo {
       try {
         this.conn.query(query, params, (error, results) => {
           if (error) {
+            console.log(`BaseRepo.execute: Trouble executing sql. Sql: ${query}`);
             reject(error);
           }
   
@@ -29,7 +30,7 @@ export abstract class BaseRepo {
       }
       catch (error) {
         console.log(`BaseRepo.execute: Trouble executing sql. Sql: ${query}`);
-        throw error;
+        reject(error);
       }
     });
   }
