@@ -18,3 +18,7 @@ export * from "./testing/mocked-cache-helper-functions";
 
 // errors
 export * from "./errors/not-found.error";
+
+// functions
+export * from "./aws/lambda/error-handler";
+export * from "./aws/lambda/response-handler";

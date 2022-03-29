@@ -11,12 +11,12 @@ export abstract class BaseRepo {
   protected async query<T>(query: string, params: string[] | Object): Promise<T[]> {
     const conn = this.getConnection();
 
-    const results = await conn.query(query, params);
+    const [rows] = await conn.query(query, params);
 
-    if (!Array.isArray(results)) {
+    if (!Array.isArray(rows)) {
       throw new Error(`Result of query is not an array.`);
     }
 
-    return results as unknown as T[];
+    return rows as unknown as T[];
   }
 }
