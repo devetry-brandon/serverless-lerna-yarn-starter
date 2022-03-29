@@ -1,9 +1,0 @@
-{
-  "dev": {
-    "driver": "mysql",
-    "user": "root",
-    "password": "password",
-    "host": "aa98v5e4cexl82.cxkcyw1kssxt.us-west-2.rds.amazonaws.com",
-    "database": "adobesigndev"
-  }
-}

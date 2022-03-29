@@ -26,8 +26,12 @@
     "url": "https://github.com/devetry-brandon/serverless-lerna-yarn-starter/issues"
   },
   "dependencies": {
+    "@types/mysql": "^2.15.21",
     "asu-core": "^1.0.0",
     "axios": "^0.26.1",
+    "db-migrate": "^0.11.13",
+    "db-migrate-mysql": "^2.2.0",
+    "mysql2": "^2.3.3",
     "tsyringe": "^4.6.0"
   }
 }

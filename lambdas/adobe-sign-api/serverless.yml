@@ -10,7 +10,12 @@ provider:
     REGION: ${opt:region, 'us-east-1'}
     STAGE: ${opt:stage, 'dev'}
     CACHE_ENDPOINT: { 'Fn::ImportValue': 'AdobeSign-ElasticCacheCluster-Endpoint' }
-
+    ADOBE_SIGN_DB_CONNECTION_LIMIT: 5
+    ADOBE_SIGN_DB_HOST: aa98v5e4cexl82.cxkcyw1kssxt.us-west-2.rds.amazonaws.com
+    ADOBE_SIGN_DB_USER: root
+    ADOBE_SIGN_DB_PASSWORD: password
+    ADOBE_SIGN_DB_DATABASE: adobesigndev
+    
 functions:
   getAgreement:
     role: lambdaRole
@@ -23,6 +28,22 @@ functions:
     events:
       - http:
           path: agreements/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
+  getTemplate:
+    role: lambdaRole
+    handler: lib/templates-controller.getTemplate
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: templates/{id}
           method: get
           request:
             parameters:

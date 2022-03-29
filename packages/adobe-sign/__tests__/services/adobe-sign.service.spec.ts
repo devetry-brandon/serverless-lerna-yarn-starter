@@ -2,11 +2,14 @@ import "reflect-metadata";
 import { AdobeSignApi } from '../../src/apis/adobe-sign-api';
 import { Agreement } from '../../src/models/agreement';
 import { AdobeSignService } from '../../src/services/adobe-sign.service';
+import { TemplatesRepo } from '../../src/repos/templates.repo';
+import { Mock } from "asu-core";
 
 describe('AdobeSignService', () => {
     function setup() {
         const adobeApi = new AdobeSignApi(null, null);
-        const service = new AdobeSignService(adobeApi);
+        const templateRepo = Mock(new TemplatesRepo(null));
+        const service = new AdobeSignService(adobeApi, templateRepo);
 
         return { service, adobeApi };
     }
