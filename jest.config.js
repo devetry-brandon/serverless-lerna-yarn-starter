@@ -16,6 +16,7 @@ module.exports = {
     "errors",
     "providers",
     "testing",
-    "migrations"
+    "migrations",
+    "models"
   ]
 };
