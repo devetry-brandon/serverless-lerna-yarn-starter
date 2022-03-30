@@ -350,6 +350,13 @@ exports.down = function(db) {
 
 ### Apply migrations
 
+Set environment variables
+
+``` bash
+$ set -a
+$ source .env
+```
+
 This will apply all migrations that have not yet been run.  Status is tracked in the target database.
 
 ``` bash

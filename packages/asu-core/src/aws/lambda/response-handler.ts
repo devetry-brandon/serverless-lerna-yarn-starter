@@ -1,13 +1,13 @@
 import { APIGatewayProxyResult } from "aws-lambda";
 
-export const lambdaReturn = (response: any, statusCode: any = 200): APIGatewayProxyResult => {
+export const lambdaReturn = (response: string, statusCode: number = 200): APIGatewayProxyResult => {
   return {
     statusCode: statusCode,
     body: response
   }
 }
 
-export const lambdaReturnObject = (obj: Object, statusCode: any = 200): APIGatewayProxyResult => {
+export const lambdaReturnObject = (obj: Object, statusCode: number = 200): APIGatewayProxyResult => {
   return lambdaReturn(JSON.stringify(obj), statusCode);
 }
 
