@@ -9,4 +9,9 @@ export class TemplatesService {
   async getTemplate(id: number): Promise<Template> {
     return await this.templatesRepo.getTemplateById(id);
   }
+
+  async createTemplate(template: Template): Promise<Template> {
+    console.log(`Service: template is: ${JSON.stringify(template)}`);
+    return await this.templatesRepo.createTemplate(template);
+  }
 }

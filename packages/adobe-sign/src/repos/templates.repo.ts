@@ -17,7 +17,7 @@ export class TemplatesRepo extends BaseRepo {
       WHERE id = ?;
     `;
 
-    let templates = await this.query<Partial<Template>>(sql, [id]);
+    const templates = await this.query<Partial<Template>>(sql, [id]);
 
     if (templates.length === 0) {
       throw new NotFoundError(`No template found with id: ${id}`);
@@ -33,12 +33,26 @@ export class TemplatesRepo extends BaseRepo {
       WHERE adobeSignId = ?;
     `;
     
-    let templates = await this.query<Partial<Template>>(sql, [id]);
+    const templates = await this.query<Partial<Template>>(sql, [id]);
 
     if (templates.length === 0) {
       throw new NotFoundError(`No template found with adobeSignId: ${id}`);
     }
 
     return new Template(templates[0]);
+  }
+
+  async createTemplate(template: Template): Promise<Template> {
+    const sql = `
+      INSERT INTO templates (name, adobeSignId) 
+      VALUES (?, ?)
+    `;
+
+    template.id = await this.insert(sql, [
+      template.name,
+      template.adobeSignId
+    ]);
+    
+    return template;
   }
 }

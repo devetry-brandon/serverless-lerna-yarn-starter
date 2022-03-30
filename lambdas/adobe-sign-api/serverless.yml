@@ -49,6 +49,18 @@ functions:
             parameters:
               paths:
                 id: true
+  createTemplate:
+    role: lambdaRole
+    handler: lib/templates-controller.createTemplate
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: templates/{id}
+          method: post
 
 resources:
   Resources:

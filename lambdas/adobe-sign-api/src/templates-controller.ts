@@ -5,11 +5,23 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { container } from "tsyringe";
 import { TemplatesService } from "adobe-sign";
 import { lambdaHandleError, lambdaReturnObject } from "asu-core";
+import { Template } from "adobe-sign/lib/models/template";
 
 export const getTemplate = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     const service = container.resolve(TemplatesService);
     const template = await service.getTemplate(parseInt(event.pathParameters.id));
+    return lambdaReturnObject(template);
+  }
+  catch (error) {
+    return lambdaHandleError(error);
+  }
+}
+
+export const createTemplate = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  try {
+    const service = container.resolve(TemplatesService);
+    const template = await service.createTemplate(new Template(JSON.parse(event.body)));
     return lambdaReturnObject(template);
   }
   catch (error) {

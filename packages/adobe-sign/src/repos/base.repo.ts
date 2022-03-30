@@ -19,4 +19,22 @@ export abstract class BaseRepo {
 
     return rows as unknown as T[];
   }
+
+  protected async insert(query: string, params: string[] | Object): Promise<number> {
+    const conn = this.getConnection();
+
+    try {
+      const [result] = await conn.query(query, params);
+      
+      if ("insertId" in result && result.insertId) {
+        return result.insertId;
+      }
+
+      return null;
+    }
+    catch(error) {
+      console.log(`BaseRepo.insert: Trouble inserting record from sql: ${query} Error: ${error}`);
+      throw error;
+    }
+  }
 }
