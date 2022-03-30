@@ -4,7 +4,7 @@ import "reflect-metadata";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { container } from "tsyringe";
 import { TemplatesService } from "adobe-sign";
-import { NotFoundError, lambdaHandleError, lambdaReturnObject } from "asu-core";
+import { lambdaHandleError, lambdaReturnObject } from "asu-core";
 
 export const getTemplate = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {

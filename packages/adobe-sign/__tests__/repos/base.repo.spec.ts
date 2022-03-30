@@ -25,7 +25,7 @@ describe('TemplatesRepo', () => {
       const { repo, connection } = setup();
       const expectedId = 143;
 
-      connection.query.mockResolvedValue(null as any);
+      connection.query.mockResolvedValue([null] as any);
 
       // Act / Assert
       expect(repo.getTemplateById(expectedId)).rejects.toMatchObject(new Error(`Result of query is not an array.`));

@@ -23,7 +23,7 @@ describe('TemplatesRepo', () => {
       const { repo, connection } = setup();
       const expectedId = 143;
 
-      connection.query.mockResolvedValue([] as any);
+      connection.query.mockResolvedValue([[]] as any);
 
       // Act / Assert
       expect(repo.getTemplateById(expectedId)).rejects.toBeInstanceOf(NotFoundError);
@@ -37,7 +37,7 @@ describe('TemplatesRepo', () => {
         id: expectedId
       });
 
-      connection.query.mockResolvedValue([expectedTemplate, {}] as any);
+      connection.query.mockResolvedValue([[expectedTemplate, {}]] as any);
 
       const result = await repo.getTemplateById(expectedId);
 
@@ -53,7 +53,7 @@ describe('TemplatesRepo', () => {
       const { repo, connection } = setup();
       const expectedId = "AK3Kak(18j32j";
 
-      connection.query.mockResolvedValue([] as any);
+      connection.query.mockResolvedValue([[]] as any);
 
       // Act / Assert
       expect(repo.getTemplateByExternalId(expectedId)).rejects.toBeInstanceOf(NotFoundError);
@@ -67,7 +67,7 @@ describe('TemplatesRepo', () => {
         adobeSignId: expectedId
       });
 
-      connection.query.mockResolvedValue([expectedTemplate, {}] as any);
+      connection.query.mockResolvedValue([[expectedTemplate, {}]] as any);
 
       const result = await repo.getTemplateByExternalId(expectedId);
 
