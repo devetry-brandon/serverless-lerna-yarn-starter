@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { Template } from "../models/template";
+import { Template } from "../models/asu/template";
 import { TemplatesRepo } from "../repos/templates.repo";
 
 @injectable()

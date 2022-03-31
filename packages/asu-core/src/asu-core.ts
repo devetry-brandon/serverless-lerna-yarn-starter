@@ -19,6 +19,7 @@ export * from "./testing/mocked-cache-helper-functions";
 
 // errors
 export * from "./errors/not-found.error";
+export * from "./errors/data-validation.error";
 
 // functions
 export * from "./aws/lambda/error-handler";

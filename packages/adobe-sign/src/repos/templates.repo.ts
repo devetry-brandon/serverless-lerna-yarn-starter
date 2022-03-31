@@ -1,4 +1,4 @@
-import { Template } from "../models/template";
+import { Template } from "../models/asu/template";
 import { DynamoProvider } from "asu-core";
 import { injectable } from "tsyringe";
 import { BaseRepo } from "./base.repo";
