@@ -32,21 +32,27 @@ export abstract class BaseRepo<Type> {
   }
 
   protected async getById<T>(id: string): Promise<Partial<T>> {
+    let data = null;
+    
     try {
       const conn = this.connectionProvider.resolve();
 
-      const data = await conn.get({
+      data = await conn.get({
         TableName: this.table,
         Key: {
           id: id
         }
       }).promise();
-    
-      return data.Item as any as Partial<T>;
     }
     catch(error) {
       console.log(`BaseRepo.get: Error while get item from ${this.table} with id ${id}: ${error}`);
+      throw error;
+    }
+
+    if (data.Item === undefined) {
       throw new NotFoundError(`No item exists in ${this.table} with id ${id}`);
     }
+  
+    return data.Item as any as Partial<T>;
   }
 }

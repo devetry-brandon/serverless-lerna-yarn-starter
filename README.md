@@ -52,6 +52,13 @@ Bundling with Webpack...
 }
 ```
 
+## Deploying
+Navigate to a directory with a serverless.yml file and run the following command.
+
+``` bash
+$ serverless deploy --stage dev --region us-west-2
+```
+
 ## Testing
 
 We are using jest to run our unit tests.  It is configured in the top level directory, so you need to run the following command from the top level project directory to run tests:

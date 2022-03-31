@@ -76,10 +76,22 @@ describe('TemplatesRepo', () => {
       // Arrange
       const { repo, dynamo } = setup();
       const templateId = "123";
+      const expectedError = new Error("connection problem");
+      
+      dynamo.get.mockImplementation(() => { throw expectedError; });
+
+      // Act / Assert
+      expect(repo.getTemplateById(templateId)).rejects.toMatchObject(expectedError);
+    });
+
+    it('should throw 404 when no item returned', async () => {
+      // Arrange
+      const { repo, dynamo } = setup();
+      const templateId = "123";
       const table = `${expectedStage}-templates`;
       const expectedError = new NotFoundError(`No item exists in ${table} with id ${templateId}`);
       
-      dynamo.get.mockImplementation(() => { throw "Not found"; });
+      getReturns(dynamo, {});
 
       // Act / Assert
       expect(repo.getTemplateById(templateId)).rejects.toMatchObject(expectedError);

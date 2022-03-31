@@ -111,3 +111,15 @@ resources:
                     - "secretsmanager:DescribeSecret"
                     - "secretsmanager:ListSecretVersionIds"
                     - "secretsmanager:ListSecrets"
+                - Effect: "Allow"
+                  Resource:
+                    - { 'Fn::ImportValue': 'AdobeSign-TemplatesTable-Arn' }
+                    - { 'Fn::ImportValue': 'AdobeSign-AgreementsTable-Arn' }
+                  Action:
+                    - "dynamodb:BatchGetItem"
+                    - "dynamodb:GetItem"
+                    - "dynamodb:Query"
+                    - "dynamodb:Scan"
+                    - "dynamodb:BatchWriteItem"
+                    - "dynamodb:PutItem"
+                    - "dynamodb:UpdateItem"
