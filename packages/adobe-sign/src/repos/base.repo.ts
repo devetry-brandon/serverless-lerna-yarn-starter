@@ -1,39 +1,32 @@
-import { Pool } from "mysql2/promise";
-import { MysqlConnectionProvider } from "../providers/mysql-connection.provider";
+import { DynamoProvider, EnvironmentVariable } from "asu-core";
+import { v4 as uuid } from "uuid";
+
+export interface ObjectWithId {
+  id: string;
+}
 
 export abstract class BaseRepo {
-  constructor(private connectionProvider: MysqlConnectionProvider) {}
+  protected table: string;
 
-  protected getConnection(): Pool {
-    return this.connectionProvider.resolve();
+  constructor(private connectionProvider: DynamoProvider, table: string) {
+    this.table = `${process.env[EnvironmentVariable.Stage]}-${table}`;
   }
 
-  protected async query<T>(query: string, params: string[] | Object): Promise<T[]> {
-    const conn = this.getConnection();
-
-    const [rows] = await conn.query(query, params);
-
-    if (!Array.isArray(rows)) {
-      throw new Error(`Result of query is not an array.`);
-    }
-
-    return rows as unknown as T[];
-  }
-
-  protected async insert(query: string, params: string[] | Object): Promise<number> {
-    const conn = this.getConnection();
-
+  public async create<Type extends ObjectWithId>(item: Type): Promise<Type> {
     try {
-      const [result] = await conn.query(query, params);
-      
-      if ("insertId" in result && result.insertId) {
-        return result.insertId;
-      }
+      const conn = this.connectionProvider.resolve();
 
-      return null;
+      item.id = uuid();
+
+      await conn.put({
+        TableName: this.table,
+        Item: item
+      }).promise();
+    
+      return item;
     }
     catch(error) {
-      console.log(`BaseRepo.insert: Trouble inserting record from sql: ${query} Error: ${error}`);
+      console.log(`BaseRepo.create: Error while putting item in ${this.table}: ${error}`);
       throw error;
     }
   }

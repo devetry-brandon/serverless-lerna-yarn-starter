@@ -1,9 +1,0 @@
-{
-  "dev": {
-    "driver": "mysql",
-    "user": { "ENV" : "ADOBE_SIGN_DB_USER" },
-    "password": { "ENV" : "ADOBE_SIGN_DB_PASSWORD" },
-    "host": { "ENV" : "ADOBE_SIGN_DB_HOST" },
-    "database": { "ENV" : "ADOBE_SIGN_DB_DATABASE" }
-  }
-}

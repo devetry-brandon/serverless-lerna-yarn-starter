@@ -9,6 +9,7 @@ export const lambdaHandleError = (error: any): APIGatewayProxyResult => {
     }
   }
   else {
+    console.log(`lambdaHandleError: Unhandled exception: ${error}`);
     return {
       statusCode: 500,
       body: 'Internal Service Error'
