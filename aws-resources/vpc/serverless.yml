@@ -118,32 +118,12 @@ resources:
           ToPort: 6379
           SourceSecurityGroupId:
             Ref: ServerlessSecurityGroup
-    RDSSecurityGroup:
-      DependsOn: VPC
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: Ingress for RDS
-        VpcId:
-          Ref: VPC
-        SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
-          SourceSecurityGroupId:
-            Ref: ServerlessSecurityGroup
     ServerlessCacheSubnetGroup:
       Type: AWS::ElastiCache::SubnetGroup
       Properties:
         Description: "Cache Subnet Group"
         SubnetIds:
         - Ref: PrivateSubnetA
-    RDSDBSubnetGroup:
-      Type: AWS::RDS::DBSubnetGroup
-      Properties:
-        DBSubnetGroupDescription: "RDS Subnet Group"
-        SubnetIds:
-        - Ref: PublicSubnetA
-        - Ref: PrivateSubnetB
   Outputs:
     ServerlessStorageSecurityGroup:
       Description: "GroupId of the ServerlessStorageSecurityGroup for redis"
@@ -173,18 +153,4 @@ resources:
         Ref: PrivateSubnetA
       Export:
         Name: AdobeSign-PrivateSubnetA-Ref
-    RDSSecurityGroup:
-      Description: "GroupId of the RDSSecurityGroup"
-      Value:
-        Fn::GetAtt:
-          - RDSSecurityGroup
-          - GroupId
-      Export:
-        Name: AdobeSign-RDSSecurityGroup-GroupId
-    RDSDBSubnetGroup:
-      Description: "Ref of the RDSDBSubnetGroup"
-      Value:
-        Ref: RDSDBSubnetGroup
-      Export:
-        Name: AdobeSign-RDSDBSubnetGroup-Ref
   

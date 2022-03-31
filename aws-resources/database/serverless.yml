@@ -5,19 +5,28 @@ provider:
 
 resources:
   Resources:
-    AdobeSignRDS:
-      Type: AWS::RDS::DBInstance
+    TemplatesTable:
+      Type: AWS::DynamoDB::Table
       Properties:
-        DBName: 'adobesign${opt:stage}'
-        AllocatedStorage: '100'
-        DBInstanceClass: db.t2.small
-        Engine: MySQL
-        Iops: 1000
-        MasterUsername: root
-        MasterUserPassword: password
-        PubliclyAccessible: true
-        VPCSecurityGroups: 
-          - { 'Fn::ImportValue': 'AdobeSign-RDSSecurityGroup-GroupId' }
-        DBSubnetGroupName: { 'Fn::ImportValue': 'AdobeSign-RDSDBSubnetGroup-Ref' }
+        TableName: ${opt:stage}-templates
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+  Outputs:
+    TemplatesTableARN:
+      Description: "ARN of the TemplatesTable"
+      Value:
+        Fn::GetAtt:
+          - TemplatesTable
+          - Arn
+      Export:
+        Name: AdobeSign-TemplatesTable-Arn
+        
 
     
