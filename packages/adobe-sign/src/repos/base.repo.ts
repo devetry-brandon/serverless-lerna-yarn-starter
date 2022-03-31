@@ -1,4 +1,4 @@
-import { DynamoProvider, EnvironmentVariable } from "asu-core";
+import { DynamoProvider, EnvironmentVariable, NotFoundError } from "asu-core";
 import { v4 as uuid } from "uuid";
 
 export interface ObjectWithId {
@@ -8,7 +8,7 @@ export interface ObjectWithId {
 export abstract class BaseRepo {
   protected table: string;
 
-  constructor(private connectionProvider: DynamoProvider, table: string) {
+  constructor(protected connectionProvider: DynamoProvider, table: string) {
     this.table = `${process.env[EnvironmentVariable.Stage]}-${table}`;
   }
 
@@ -28,6 +28,25 @@ export abstract class BaseRepo {
     catch(error) {
       console.log(`BaseRepo.create: Error while putting item in ${this.table}: ${error}`);
       throw error;
+    }
+  }
+
+  protected async get<T>(id: string): Promise<Partial<T>> {
+    try {
+      const conn = this.connectionProvider.resolve();
+
+      const data = await conn.get({
+        TableName: this.table,
+        Key: {
+          id: id
+        }
+      }).promise();
+    
+      return data.Item as any as Partial<T>;
+    }
+    catch(error) {
+      console.log(`BaseRepo.get: Error while get item from ${this.table} with id ${id}: ${error}`);
+      throw new NotFoundError(`No item exists in ${this.table} with id ${id}`);
     }
   }
 }

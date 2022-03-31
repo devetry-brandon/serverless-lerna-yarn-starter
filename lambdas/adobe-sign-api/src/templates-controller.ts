@@ -10,7 +10,7 @@ import { Template } from "adobe-sign/lib/models/template";
 export const getTemplate = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     const service = container.resolve(TemplatesService);
-    const template = await service.getTemplate(parseInt(event.pathParameters.id));
+    const template = await service.getTemplate(event.pathParameters.id);
     return lambdaReturnObject(template);
   }
   catch (error) {

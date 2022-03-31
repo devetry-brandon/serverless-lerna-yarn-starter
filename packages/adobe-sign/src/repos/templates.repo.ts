@@ -1,5 +1,5 @@
 import { Template } from "../models/template";
-import { DynamoProvider, EnvironmentVariable, NotFoundError } from "asu-core";
+import { DynamoProvider } from "asu-core";
 import { injectable } from "tsyringe";
 import { BaseRepo } from "./base.repo";
 
@@ -9,11 +9,8 @@ export class TemplatesRepo extends BaseRepo {
     super(connectionProvider, 'templates');
   }
 
-  async getTemplateById(id: number): Promise<Template> {
-    return new Template();
-  }
-
-  async getTemplateByExternalId(id: string): Promise<Template> {
-    return new Template();
+  async getTemplateById(id: string): Promise<Template> {
+    const item = await this.get<Template>(id);
+    return new Template(item);
   }
 }
