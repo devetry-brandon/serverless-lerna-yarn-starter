@@ -1,2 +1,2 @@
 /* istanbul ignore file */
-export * from "./services/adobe-sign.service";
+export * from "./services/agreement.service";

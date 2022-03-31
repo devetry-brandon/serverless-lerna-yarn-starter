@@ -28,6 +28,22 @@ functions:
             parameters:
               paths:
                 id: true
+  createSigningUrlAgreement:
+    role: lambdaRole
+    handler: lib/agreements-controller.createSigningUrlAgreement
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: agreements/{template_id}
+          method: get
+          request:
+            parameters:
+              paths:
+                template_id: true
 
 resources:
   Resources:
