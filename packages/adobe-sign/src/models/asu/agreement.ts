@@ -9,10 +9,12 @@ export class Agreement implements ObjectWithId {
   s3Location: string;
 
   constructor(data?: Partial<Agreement>) {
-    this.id = data.id;
-    this.asuriteId = data.asuriteId;
-    this.adobeSignId = data.adobeSignId;
-    this.status = data.status;
-    this.s3Location = data.s3Location;
+    if (data) {
+      this.id = data.id;
+      this.asuriteId = data.asuriteId;
+      this.adobeSignId = data.adobeSignId;
+      this.status = data.status;
+      this.s3Location = data.s3Location;
+    }
   }
 }
