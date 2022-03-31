@@ -1,79 +1,46 @@
 import "reflect-metadata";
-import { Mock, NotFoundError } from "asu-core";
-import { MysqlConnectionProvider } from "../../src/providers/mysql-connection.provider";
+import { DynamoProvider, Mock } from "asu-core";
 import { TemplatesRepo } from "../../src/repos/templates.repo";
-import { getMockDB } from "../mocks/mock-db-connection";
-import { isExportDeclaration } from "typescript";
-import { Template } from "../../src/models/template";
+import { Template } from "../../src/models/asu/template";
+import { DynamoDB, Service, Request } from "aws-sdk";
+import { GetItemOutput } from "aws-sdk/lib/dynamodb/types";
+import { AWSError } from "aws-sdk/lib/error";
 
 describe('TemplatesRepo', () => {
   function setup() {
-    const connectionProvider = Mock(new MysqlConnectionProvider());
-    const dbConnection = getMockDB();
+    const connectionProvider = Mock(new DynamoProvider());
+    const dynamo = Mock(new DynamoDB.DocumentClient());
     const repo = new TemplatesRepo(connectionProvider);
 
-    connectionProvider.resolve.mockReturnValue(dbConnection);
+    connectionProvider.resolve.mockReturnValue(dynamo);
 
-    return { repo, connection: dbConnection }
+    return { repo, dynamo }
   }
 
+  const getReturns = (dynamo: jest.Mocked<DynamoDB.DocumentClient>, returnValue: any) => {
+    const getReturn = Mock(new Request<GetItemOutput, AWSError>(Mock(new Service()), null));
+    getReturn.promise.mockResolvedValue(returnValue || null);
+    dynamo.get.mockReturnValue(getReturn);
+  };
+
   describe('getTemplateById', () => {
-    it('should throw NotFoundError when no templates are returned', async () => {
+    it('should call base with given id and return Template Object', async () => {
       // Arrange
-      const { repo, connection } = setup();
-      const expectedId = 143;
+      const { repo, dynamo } = setup();
+      const returnedItem = {
+        id: "123",
+        name: "Test"
+      };
 
-      connection.query.mockResolvedValue([[]] as any);
+      getReturns(dynamo, { Item: returnedItem });
 
-      // Act / Assert
-      expect(repo.getTemplateById(expectedId)).rejects.toBeInstanceOf(NotFoundError);
-    });
+      // Act 
+      const result = await repo.getTemplateById(returnedItem.id);
 
-    it('should call database with given id and return first found template', async () => {
-      // Arrange
-      const { repo, connection } = setup();
-      const expectedId = 143;
-      const expectedTemplate = new Template({
-        id: expectedId
-      });
-
-      connection.query.mockResolvedValue([[expectedTemplate, {}]] as any);
-
-      const result = await repo.getTemplateById(expectedId);
-
-      // Act / Assert
-      expect(connection.query).toBeCalledWith(expect.any(String), [expectedId]);
-      expect(result).toMatchObject(expectedTemplate);
-    });
-  });
-
-  describe('getTemplateByExternalId', () => {
-    it('should throw NotFoundError when no templates are returned', async () => {
-      // Arrange
-      const { repo, connection } = setup();
-      const expectedId = "AK3Kak(18j32j";
-
-      connection.query.mockResolvedValue([[]] as any);
-
-      // Act / Assert
-      expect(repo.getTemplateByExternalId(expectedId)).rejects.toBeInstanceOf(NotFoundError);
-    });
-
-    it('should call database with given id and return first found template', async () => {
-      // Arrange
-      const { repo, connection } = setup();
-      const expectedId = "AK3Kak(18j32j";
-      const expectedTemplate = new Template({
-        adobeSignId: expectedId
-      });
-
-      connection.query.mockResolvedValue([[expectedTemplate, {}]] as any);
-
-      const result = await repo.getTemplateByExternalId(expectedId);
-
-      // Act / Assert
-      expect(connection.query).toBeCalledWith(expect.any(String), [expectedId]);
-      expect(result).toMatchObject(expectedTemplate);
+      // Assert
+      expect(result).toBeInstanceOf(Template);
+      expect(result.id).toBe(returnedItem.id);
+      expect(result.name).toBe(returnedItem.name);
     });
   });
 });

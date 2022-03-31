@@ -1,5 +1,7 @@
+import "reflect-metadata"
 import { NotFoundError } from "../../../src/errors/not-found.error";
 import { lambdaHandleError } from "../../../src/aws/lambda/error-handler";
+import { DataValidationError } from "../../../src/asu-core";
 
 describe('error-handler', () => {
   describe('lambdaHandleError', () => {
@@ -12,6 +14,18 @@ describe('error-handler', () => {
 
       // Assert
       expect(result.statusCode).toBe(404);
+      expect(result.body).toBe(error.message);
+    });
+
+    it('should set status code to 400 and body to error message when DataValidationError thrown', () => {
+      // Arrange
+      const error = new DataValidationError('name is required');
+
+      // Act
+      const result = lambdaHandleError(error);
+
+      // Assert
+      expect(result.statusCode).toBe(400);
       expect(result.body).toBe(error.message);
     });
 

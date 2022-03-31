@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Mock } from "asu-core";
-import { Template } from "../../src/models/template";
+import { Template } from "../../src/models/asu/template";
 import { TemplatesRepo } from "../../src/repos/templates.repo";
 import { TemplatesService } from "../../src/services/templates.service";
 
@@ -16,7 +16,7 @@ describe('TemplateService', () => {
     it('should call TemplatesRepo with the given id', async () => {
       // Arrange
       const { service, templatesRepo } = setup();
-      const expectedTemplateId = 143;
+      const expectedTemplateId = "143";
       let expectedTemplate = new Template({
         id: expectedTemplateId,
         name: "I-9",
@@ -30,6 +30,26 @@ describe('TemplateService', () => {
 
       // Assert
       expect(templatesRepo.getTemplateById).toBeCalledWith(expectedTemplateId);
+      expect(result).toEqual(expectedTemplate);
+    });
+  });
+
+  describe('createTemplate', () => {
+    it('should call TemplatesRepo with the given template', async () => {
+      // Arrange
+      const { service, templatesRepo } = setup();
+      let expectedTemplate = new Template({
+        name: "I-9",
+        adobeSignId: "AJ2"
+      });
+
+      templatesRepo.create.mockResolvedValue(expectedTemplate);
+      
+      // Act
+      const result = await service.createTemplate(expectedTemplate);
+
+      // Assert
+      expect(templatesRepo.create).toBeCalledWith(expectedTemplate);
       expect(result).toEqual(expectedTemplate);
     });
   });
