@@ -45,11 +45,8 @@ describe('AdobeSignAPI', () => {
             let { adobeApi, secretsManagerService } = setup();
             secretsManagerService.getSecret.mockRejectedValue(new Error('Test error'));
 
-            // Assert
-            await expect(async () => {
-                // Act
-                await adobeApi.getAgreement(fixture.mockAgreementId);
-            }).rejects.toThrow(AdobeApiError);
+            // Act / Assert
+            await expect(adobeApi.getAgreement(fixture.mockAgreementId)).rejects.toThrow(AdobeApiError);
         })
 
         it('should throw an AdobeApiError if API request failed', async () => {
@@ -65,11 +62,8 @@ describe('AdobeSignAPI', () => {
                 }
             });
 
-            // Assert
-            await expect(async () => {
-                // Act
-                await adobeApi.getAgreement(fixture.mockAgreementId);
-            }).rejects.toThrow(AdobeApiError);
+            // Act / Assert
+            await expect(adobeApi.getAgreement(fixture.mockAgreementId)).rejects.toThrow(AdobeApiError);
         })
     });
 
@@ -104,11 +98,8 @@ describe('AdobeSignAPI', () => {
                 }
             });
 
-            // Assert
-            await expect(async () => {
-                // Act
-                await adobeApi.createAgreement(fixture.mockAgreementCreationData);
-            }).rejects.toThrow(AdobeApiError);
+            // Act / Assert
+            await expect(adobeApi.createAgreement(fixture.mockAgreementCreationData)).rejects.toThrow(AdobeApiError);
         })
     });
 
@@ -159,11 +150,8 @@ describe('AdobeSignAPI', () => {
                 }
             });
 
-            // Assert
-            await expect(async () => {
-                // Act
-                await adobeApi.getAgreementSigningUrls(fixture.mockAgreementId);
-            }).rejects.toThrow(AdobeApiError);
+            // Act / Assert
+            await expect(adobeApi.getAgreementSigningUrls(fixture.mockAgreementId)).rejects.toThrow(AdobeApiError);
         })
     });
 });

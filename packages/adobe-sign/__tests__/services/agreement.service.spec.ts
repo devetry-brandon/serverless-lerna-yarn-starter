@@ -84,8 +84,8 @@ describe('AgreementService', () => {
 
             // Assert
             expect(result).toMatchObject({
-                'agreement_id': fixture.mockAgreementId,
-                'signing_url': fixture.mockSigningUrl
+                agreement_id: fixture.mockAgreementId,
+                signing_url: fixture.mockSigningUrl
             });
         });
     });
