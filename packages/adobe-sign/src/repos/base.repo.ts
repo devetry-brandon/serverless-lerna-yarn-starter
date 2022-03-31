@@ -5,7 +5,7 @@ export interface ObjectWithId {
   id: string;
 }
 
-export abstract class BaseRepo {
+export abstract class BaseRepo<Type> {
   protected table: string;
 
   constructor(protected connectionProvider: DynamoProvider, table: string) {
@@ -31,7 +31,7 @@ export abstract class BaseRepo {
     }
   }
 
-  protected async get<T>(id: string): Promise<Partial<T>> {
+  protected async getById<T>(id: string): Promise<Partial<T>> {
     try {
       const conn = this.connectionProvider.resolve();
 

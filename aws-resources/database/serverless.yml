@@ -18,6 +18,19 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    AgreementsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-agreements
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
   Outputs:
     TemplatesTableARN:
       Description: "ARN of the TemplatesTable"
@@ -27,6 +40,14 @@ resources:
           - Arn
       Export:
         Name: AdobeSign-TemplatesTable-Arn
+    AgreementsTableARN:
+      Description: "ARN of the AgreementsTable"
+      Value:
+        Fn::GetAtt:
+          - AgreementsTable
+          - Arn
+      Export:
+        Name: AdobeSign-AgreementsTable-Arn
         
 
     
