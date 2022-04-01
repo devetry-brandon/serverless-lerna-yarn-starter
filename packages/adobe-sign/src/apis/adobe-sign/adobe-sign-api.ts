@@ -1,6 +1,6 @@
 import {AwsSecretKey, AwsSecretName, AxiosProvider, SecretsManagerService} from "asu-core";
 import { injectable } from "tsyringe";
-import { Agreement } from "./models/agreement";
+import { Agreement } from "../../models/adobe-sign/agreement";
 import {Axios} from "axios";
 import {AdobeApiError} from "../errors/adobe-api-error";
 

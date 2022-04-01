@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
 import { AdobeSignApi } from "../apis/adobe-sign/adobe-sign-api";
-import { Agreement } from "../apis/adobe-sign/models/agreement";
-import {AgreementPostData} from "../apis/adobe-sign/models/agreement-post-data";
+import { Agreement } from "../models/adobe-sign/agreement";
+import {AgreementPostData} from "../models/adobe-sign/agreement-post-data";
 
 @injectable()
 export class AgreementService {

@@ -36,7 +36,8 @@ Run test to make sure project is setup correctly:
 
 ``` bash
 $ cd lambdas/adobe-sign-api
-$ serverless invoke local -f getAgreement --data '{ "pathParameters": {"id":"P50WXIl6PUlonrSH"}}'
+$ serverless invoke local -f getTemplate --data '{ "pathParameters": {"id":"1be3f61a-e9fe-4247-9463-98856a6bf6ad"}}' --region us-west-2
+$ serverless invoke local -f createTemplate --data '{ "body": "{\"name\":\"test\", \"adobeSignId\": \"asdf\", \"formDataMappings\": [{\"source\":\"UserInfo\", \"sourceField\":\"firstName\", \"targetField\":\"First.Name\", \"defaultValue\":\"Brandon\"}]}"}' --region us-west-2
 ```
 
 You should see the following output, or similar:
@@ -49,6 +50,13 @@ Bundling with Webpack...
     "statusCode": 200,
     "body": "{\"id\":\"P50WXIl6PUlonrSH\"}"
 }
+```
+
+## Deploying
+Navigate to a directory with a serverless.yml file and run the following command.
+
+``` bash
+$ serverless deploy --stage dev --region us-west-2
 ```
 
 ## Testing
@@ -160,11 +168,23 @@ export function packageName(): string {
 export * from "./services/adobe-sign.service";
 ```
 
+**Change directory**
+
+``` bash
+$ cd packages/some-package
+```
+
+**Install Dependencies**
+
+``` bash
+$ yarn
+```
+
 **Compile**
 Running the following command will generate the necessary javascript files that are needed for other packages to consume the exported memebers of your new package.
 
 ``` bash
-$ lerna run tsc
+$ yarn tsc
 ```
 
 **Add package as dependency to another package**

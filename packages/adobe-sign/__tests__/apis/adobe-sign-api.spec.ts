@@ -27,7 +27,7 @@ describe('AdobeSignAPI', () => {
                 groupId: 'CBJCHBCAABAACnRhBD9pKDAfZ55583n-4WOlwlvI_RGM',
                 type: 'AGREEMENT',
                 status: 'SIGNED',
-                hasFormFieldData: true,
+                hasFormFieldData: true
             }
 
             mockAxios.get.mockResolvedValue({data: mockData});

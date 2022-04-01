@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { AdobeSignApi } from '../../src/apis/adobe-sign/adobe-sign-api';
-import { Agreement } from '../../src/apis/adobe-sign/models/agreement';
+import { Agreement } from '../../src/models/adobe-sign/agreement';
 import { AgreementService } from '../../src/services/agreement.service';
 import * as fixture from "../../__fixtures__/adobe-sign-api";
 
