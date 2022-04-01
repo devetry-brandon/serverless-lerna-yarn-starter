@@ -1,157 +1,165 @@
 import "reflect-metadata";
-import { AdobeSignApi } from '../../src/apis/adobe-sign/adobe-sign-api';
-import {AxiosProvider, SecretsManagerService} from "asu-core";
+import {AdobeSignApi} from '../../src/apis/adobe-sign/adobe-sign-api';
+import {AxiosProvider, NotFoundError, SecretsManagerService} from "asu-core";
 import {Mock} from "asu-core/src/testing/mock-provider";
 import {Axios} from "axios";
-import {AdobeApiError} from "../../src/apis/errors/adobe-api-error";
 import * as fixture from "../../__fixtures__/adobe-sign-api";
 
 describe('AdobeSignAPI', () => {
-    function setup() {
-        const secretsManagerService = Mock(new SecretsManagerService(null, null));
-        const mockAxios = Mock(new Axios());
-        const axiosProvider = Mock(new AxiosProvider())
-        axiosProvider.resolve.mockReturnValue(mockAxios);
-        const adobeApi = new AdobeSignApi(secretsManagerService, axiosProvider);
+  function setup() {
+    const secretsManagerService = Mock(new SecretsManagerService(null, null));
+    const mockAxios = Mock(new Axios());
+    const axiosProvider = Mock(new AxiosProvider())
+    axiosProvider.resolve.mockReturnValue(mockAxios);
+    const adobeApi = new AdobeSignApi(secretsManagerService, axiosProvider);
 
-        return { secretsManagerService, adobeApi, mockAxios };
-    }
+    return {secretsManagerService, adobeApi, mockAxios};
+  }
 
-    describe('getAgreement', () => {
-        it('should make a GET request with the given id and return Agreement object', async () => {
-            // Arrange
-            let { adobeApi, mockAxios } = setup();
-            const mockData = {
-                id: fixture.mockAgreementId,
-                name: '[DEMO USE ONLY] Agreement Test 001',
-                groupId: 'CBJCHBCAABAACnRhBD9pKDAfZ55583n-4WOlwlvI_RGM',
-                type: 'AGREEMENT',
-                status: 'SIGNED',
-                hasFormFieldData: true
-            }
+  function addAxiosResponseInterceptor(mockAxios: jest.Mocked<Axios>) {
+    Object.defineProperty(mockAxios, 'interceptors', {
+      value: {
+        response: {
+          use: jest.fn()
+        },
+      }
+    });
+  }
 
-            mockAxios.get.mockResolvedValue({data: mockData});
+  describe('getAgreement', () => {
+    it('should make a GET request with the given id and return Agreement object', async () => {
+      // Arrange
+      let {adobeApi, mockAxios} = setup();
+      const mockData = {
+        id: fixture.mockAgreementId,
+        name: '[DEMO USE ONLY] Agreement Test 001',
+        groupId: 'CBJCHBCAABAACnRhBD9pKDAfZ55583n-4WOlwlvI_RGM',
+        type: 'AGREEMENT',
+        status: 'SIGNED',
+        hasFormFieldData: true
+      }
 
-            // Act
-            let result = await adobeApi.getAgreement(mockData.id);
+      mockAxios.get.mockResolvedValue({data: mockData});
 
-            // Assert
-            expect(mockAxios.get).toBeCalledWith('/agreements/' + mockData.id);
-            expect(result).toMatchObject(mockData);
-        });
+      // Act
+      let result = await adobeApi.getAgreement(mockData.id);
 
-        it('should throw an AdobeApiError if the HTTP client cannot be created', async () => {
-            // Arrange
-            let { adobeApi, secretsManagerService } = setup();
-            secretsManagerService.getSecret.mockRejectedValue(new Error('Test error'));
-
-            // Act / Assert
-            await expect(adobeApi.getAgreement(fixture.mockAgreementId)).rejects.toThrow(AdobeApiError);
-        })
-
-        it('should throw an AdobeApiError if API request failed', async () => {
-            // Arrange
-            let { adobeApi, mockAxios } = setup();
-            mockAxios.get.mockRejectedValue({
-                response: {
-                    status: 401,
-                    data: {
-                        code: "TEST_ERROR",
-                        message: 'Test error'
-                    }
-                }
-            });
-
-            // Act / Assert
-            await expect(adobeApi.getAgreement(fixture.mockAgreementId)).rejects.toThrow(AdobeApiError);
-        })
+      // Assert
+      expect(mockAxios.get).toBeCalledWith('/agreements/' + mockData.id);
+      expect(result).toMatchObject(mockData);
     });
 
-    describe('createAgreement', () => {
-        it('should make a POST request with the given creation data and return Agreement ID', async () => {
-            // Arrange
-            let { adobeApi, mockAxios } = setup();
-            const mockResponseData = {
-                id: fixture.mockAgreementId
-            }
+    it('should throw if the HTTP client cannot be created', async () => {
+      // Arrange
+      let {adobeApi, secretsManagerService} = setup();
+      const expectedError = new Error('Could not connect to secret manager.');
+      secretsManagerService.getSecret.mockRejectedValue(expectedError);
 
-            mockAxios.post.mockResolvedValue({data: mockResponseData});
+      // Act / Assert
+      await expect(adobeApi.getAgreement(fixture.mockAgreementId)).rejects.toThrow(expectedError);
+    })
 
-            // Act
-            let result = await adobeApi.createAgreement(fixture.mockAgreementCreationData);
+    it('should throw NotFound error if AdobeSign API returns an error code of INVALID_AGREEMENT_ID', async () => {
+      // Arrange
+      let {adobeApi, mockAxios} = setup();
+      mockAxios.get.mockRejectedValue({
+        response: {
+          status: 404,
+          data: {
+            code: "INVALID_AGREEMENT_ID",
+            message: 'The Agreement ID specified is invalid'
+          }
+        }
+      });
 
-            // Assert
-            expect(mockAxios.post).toBeCalledWith('/agreements', fixture.mockAgreementCreationData);
-            expect(result).toBe(mockResponseData.id);
-        });
+      // Act / Assert
+      await expect(adobeApi.getAgreement(fixture.mockAgreementId)).rejects.toThrow(NotFoundError);
+    })
+  });
 
-        it('should throw an AdobeApiError if API request failed', async () => {
-            // Arrange
-            let { adobeApi, mockAxios } = setup();
-            mockAxios.post.mockRejectedValue({
-                response: {
-                    status: 401,
-                    data: {
-                        code: "TEST_ERROR",
-                        message: 'Test error'
-                    }
-                }
-            });
+  describe('createAgreement', () => {
+    it('should make a POST request with the given creation data and return Agreement ID', async () => {
+      // Arrange
+      let {adobeApi, mockAxios} = setup();
+      const mockResponseData = {
+        id: fixture.mockAgreementId
+      }
 
-            // Act / Assert
-            await expect(adobeApi.createAgreement(fixture.mockAgreementCreationData)).rejects.toThrow(AdobeApiError);
-        })
+      mockAxios.post.mockResolvedValue({data: mockResponseData});
+
+      // Act
+      let result = await adobeApi.createAgreement(fixture.mockAgreementCreationData);
+
+      // Assert
+      expect(mockAxios.post).toBeCalledWith('/agreements', fixture.mockAgreementCreationData);
+      expect(result).toBe(mockResponseData.id);
     });
 
-    describe('getAgreementSigningUrls', () => {
-        it('should make a GET request with the given agreement ID and return a signing URL', async () => {
-            // Arrange
-            let { adobeApi, mockAxios } = setup();
-            const expectedSigningUrl = fixture.mockSigningUrl;
-            const mockResponseData = {
-                "signingUrlSetInfos": [
-                    {
-                        "signingUrls": [
-                            {
-                                "email": "ngleapai@gmail.com",
-                                "esignUrl": expectedSigningUrl
-                            }
-                        ]
-                    }
-                ]
-            }
+    it('should throw if API request failed', async () => {
+      // Arrange
+      let {adobeApi, mockAxios} = setup();
+      const expectedError = new Error('Internal server error');
+      mockAxios.post.mockRejectedValue({
+        response: {
+          status: 400,
+          data: {
+            code: "MISSING_REQUIRED_PARAM",
+            message: 'Name is missing.'
+          }
+        }
+      });
 
-            mockAxios.get.mockResolvedValue({data: mockResponseData});
-            Object.defineProperty(mockAxios,'interceptors', {value: {
-                response: {
-                    use: jest.fn()
-                },
-            }});
+      // Act / Assert
+      await expect(adobeApi.createAgreement(fixture.mockAgreementCreationData)).rejects.toThrow(expectedError);
+    })
+  });
 
-            // Act
-            let result = await adobeApi.getAgreementSigningUrls(fixture.mockAgreementId);
+  describe('getAgreementSigningUrls', () => {
+    it('should make a GET request with the given agreement ID and return a signing URL', async () => {
+      // Arrange
+      let {adobeApi, mockAxios} = setup();
+      const expectedSigningUrl = fixture.mockSigningUrl;
+      const mockResponseData = {
+        "signingUrlSetInfos": [
+          {
+            "signingUrls": [
+              {
+                "email": "ngleapai@gmail.com",
+                "esignUrl": expectedSigningUrl
+              }
+            ]
+          }
+        ]
+      }
 
-            // Assert
-            expect(mockAxios.get).toBeCalledWith(`/agreements/${fixture.mockAgreementId}/signingUrls`);
-            expect(mockAxios.interceptors.response.use).toHaveBeenCalled();
-            expect(result).toBe(expectedSigningUrl);
-        });
+      mockAxios.get.mockResolvedValue({data: mockResponseData});
+      addAxiosResponseInterceptor(mockAxios);
 
-        it('should throw an AdobeApiError if API request failed', async () => {
-            // Arrange
-            let { adobeApi, mockAxios } = setup();
-            mockAxios.get.mockRejectedValue({
-                response: {
-                    status: 401,
-                    data: {
-                        code: "TEST_ERROR",
-                        message: 'Test error'
-                    }
-                }
-            });
+      // Act
+      let result = await adobeApi.getAgreementSigningUrls(fixture.mockAgreementId);
 
-            // Act / Assert
-            await expect(adobeApi.getAgreementSigningUrls(fixture.mockAgreementId)).rejects.toThrow(AdobeApiError);
-        })
+      // Assert
+      expect(mockAxios.get).toBeCalledWith(`/agreements/${fixture.mockAgreementId}/signingUrls`);
+      expect(mockAxios.interceptors.response.use).toHaveBeenCalled();
+      expect(result).toBe(expectedSigningUrl);
     });
+
+    it('should throw NotFound error if AdobeSign API returns an error code of INVALID_AGREEMENT_ID', async () => {
+      // Arrange
+      let {adobeApi, mockAxios} = setup();
+      mockAxios.get.mockRejectedValue({
+        response: {
+          status: 404,
+          data: {
+            code: "INVALID_AGREEMENT_ID",
+            message: 'The Agreement ID specified is invalid'
+          }
+        }
+      });
+      addAxiosResponseInterceptor(mockAxios);
+
+      // Act / Assert
+      await expect(adobeApi.getAgreementSigningUrls(fixture.mockAgreementId)).rejects.toThrow(NotFoundError);
+    })
+  });
 });

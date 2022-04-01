@@ -1,6 +1,6 @@
 import { DynamoProvider } from "asu-core";
 import { injectable } from "tsyringe";
-import { Agreement } from "../models/adobe-sign/agreement";
+import { Agreement } from "../models/asu/agreement";
 import { BaseRepo } from "./base.repo";
 
 @injectable()

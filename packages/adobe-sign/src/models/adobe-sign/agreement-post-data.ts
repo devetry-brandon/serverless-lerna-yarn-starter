@@ -45,7 +45,7 @@ export class AgreementPostData {
       "participantSetsInfo": [
         {
           "memberInfos": [
-              this.signer
+            this.signer
           ],
           "order": 1,
           "role": "SIGNER"

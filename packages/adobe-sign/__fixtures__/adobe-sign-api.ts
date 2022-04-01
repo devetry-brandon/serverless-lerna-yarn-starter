@@ -1,3 +1,6 @@
+import {FormDataMappingSource} from "../src/enums/form-data-mapping-source";
+import {AgreementStatus} from "../src/enums/agreement-status";
+
 export const mockAgreementId = "CBJCHBCAABAAN24SWUnGHW-o_NaT5i3O5lKuHiccQ2GP";
 export const mockTemplateId = "CBJCHBCAABAAA7v8YWZkc2LRy8nh4m_p5C_XFmZkw4tO";
 export const mockAsuUserId = 'testuser';
@@ -7,27 +10,26 @@ export const mockUserData = {
   email: "fake.user@deptagency.com",
   firstName: 'Fake',
   lastName: 'User',
+  customField: 'test'
 }
 
 export const mockTemplateData = {
-  id: mockTemplateId,
-  title: 'Agreement Title',
-  options: {
-    silenceEmails: true
-  },
-  mappings: [
-    {
-      source: 'ods',
-      sourceField: 'firstName',
-      targetField: 'First.Name',
-      defaultValue: '',
-    },
-    {
-      source: 'ods',
-      sourceField: 'lastName',
-      targetField: 'Last.Name',
-      defaultValue: '',
-    },
+  id: '123-abc-456-def',
+  name: 'Agreement Title',
+  adobeSignId: mockTemplateId,
+  formDataMappings: [
+      {
+        source: FormDataMappingSource.UserInfo,
+        sourceField: 'firstName',
+        targetField: 'First.Name',
+        defaultValue: '',
+      },
+      {
+        source: FormDataMappingSource.UserInfo,
+        sourceField: 'lastName',
+        targetField: 'Last.Name',
+        defaultValue: '',
+      }
   ]
 }
 
@@ -70,4 +72,12 @@ export const mockAgreementCreationData = {
   "signatureType": "ESIGN",
   "state": "IN_PROCESS",
   "status": "OUT_FOR_SIGNATURE"
+}
+
+export const mockAsuAgreementData = {
+  id: undefined,
+  adobeSignId: mockAgreementId,
+  adobeSignTemplateId: mockTemplateId,
+  asuriteId: mockAsuUserId,
+  status: AgreementStatus.InProgress
 }
