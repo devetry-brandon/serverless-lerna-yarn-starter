@@ -7,8 +7,7 @@
         "tsc": "tsc",
         "compileWatch": "tsc --watch",
         "compileAll": "lerna run tsc",
-        "test": "serverless-bundle test",
-        "postinstall": "yarn run compileAll"
+        "test": "serverless-bundle test"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.93",

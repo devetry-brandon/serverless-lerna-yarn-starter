@@ -15,6 +15,9 @@ module.exports = {
     "enums",
     "errors",
     "providers",
-    "testing"
-  ]
+    "testing",
+    "migrations",
+    "models"
+  ],
+  testPathIgnorePatterns: ["/node_modules/", "/mocks/"]
 };

@@ -10,7 +10,7 @@ provider:
     REGION: ${opt:region, 'us-east-1'}
     STAGE: ${opt:stage, 'dev'}
     CACHE_ENDPOINT: { 'Fn::ImportValue': 'AdobeSign-ElasticCacheCluster-Endpoint' }
-
+    
 functions:
   getAgreement:
     role: lambdaRole
@@ -28,6 +28,34 @@ functions:
             parameters:
               paths:
                 id: true
+  getTemplate:
+    role: lambdaRole
+    handler: lib/templates-controller.getTemplate
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: templates/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
+  createTemplate:
+    role: lambdaRole
+    handler: lib/templates-controller.createTemplate
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: templates
+          method: post
 
 resources:
   Resources:
@@ -78,3 +106,15 @@ resources:
                     - "secretsmanager:DescribeSecret"
                     - "secretsmanager:ListSecretVersionIds"
                     - "secretsmanager:ListSecrets"
+                - Effect: "Allow"
+                  Resource:
+                    - { 'Fn::ImportValue': 'AdobeSign-TemplatesTable-Arn' }
+                    - { 'Fn::ImportValue': 'AdobeSign-AgreementsTable-Arn' }
+                  Action:
+                    - "dynamodb:BatchGetItem"
+                    - "dynamodb:GetItem"
+                    - "dynamodb:Query"
+                    - "dynamodb:Scan"
+                    - "dynamodb:BatchWriteItem"
+                    - "dynamodb:PutItem"
+                    - "dynamodb:UpdateItem"

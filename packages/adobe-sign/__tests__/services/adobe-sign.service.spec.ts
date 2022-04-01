@@ -22,7 +22,7 @@ describe('AdobeSignService', () => {
                 groupId: 'CBJCHBCAABAACnRhBD9pKDAfZ55583n-4WOlwlvI_RGM',
                 type: 'AGREEMENT',
                 status: 'SIGNED',
-                hasFormFieldData: true,
+                hasFormFieldData: true
             });
 
             let apiSpy = jest.spyOn(adobeApi, 'getAgreement').mockResolvedValue(agreement);
