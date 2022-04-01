@@ -1,0 +1,28 @@
+service: adobe-sign-sqs
+
+provider:
+  name: aws
+
+resources:
+  Resources:
+    AgreementWebhookQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: agreement-webhooks.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
+  Outputs:
+    AgreementWebhookQueueARN:
+      Description: "ARN of the AgreementWebhookQueue"
+      Value:
+        Fn::GetAtt:
+          - AgreementWebhookQueue
+          - Arn
+      Export:
+        Name: AdobeSign-AgreementWebhookQueue-Arn
+    AgreementWebhookQueueURL:
+      Description: "Queue url of the AgreementWebhookQueue"
+      Value:
+        Ref: AgreementWebhookQueue
+      Export:
+        Name: AdobeSign-AgreementWebhookQueue-Url

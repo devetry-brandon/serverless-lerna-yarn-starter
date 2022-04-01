@@ -10,6 +10,7 @@ provider:
     REGION: ${opt:region, 'us-east-1'}
     STAGE: ${opt:stage, 'dev'}
     CACHE_ENDPOINT: { 'Fn::ImportValue': 'AdobeSign-ElasticCacheCluster-Endpoint' }
+    AGREEMENT_WEBHOOK_QUEUE_URL: { 'Fn::ImportValue': 'AdobeSign-AgreementWebhookQueue-Url' }
     
 functions:
   getAgreement:
@@ -55,6 +56,30 @@ functions:
     events:
       - http:
           path: templates
+          method: post
+  webhookVerification:
+    role: lambdaRole
+    handler: lib/webhook-controller.webhookVerification
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: webhook
+          method: get
+  webhookPost:
+    role: lambdaRole
+    handler: lib/webhook-controller.webhookPost
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: webhook
           method: post
 
 resources:
@@ -118,3 +143,10 @@ resources:
                     - "dynamodb:BatchWriteItem"
                     - "dynamodb:PutItem"
                     - "dynamodb:UpdateItem"
+                - Effect: "Allow"
+                  Resource:
+                    - { 'Fn::ImportValue': 'AdobeSign-AgreementWebhookQueue-Arn' }
+                  Action:
+                    - "sqs:ReceiveMessage"
+                    - "sqs:DeleteMessage"
+                    - "sqs:SendMessage"
