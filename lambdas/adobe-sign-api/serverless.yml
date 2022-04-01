@@ -150,3 +150,8 @@ resources:
                     - "sqs:ReceiveMessage"
                     - "sqs:DeleteMessage"
                     - "sqs:SendMessage"
+                - Effect: "Allow"
+                  Resource:
+                    - { 'Fn::ImportValue': 'AdobeSign-AdobeSignBucket-Arn' }
+                  Action:
+                    - "s3:PutObject"
