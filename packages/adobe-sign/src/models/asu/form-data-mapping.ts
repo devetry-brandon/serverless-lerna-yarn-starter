@@ -8,8 +8,6 @@ export class FormDataMapping {
   defaultValue: string;
 
   constructor(data?: Partial<FormDataMapping>) {
-    
-
     if (data) {
       this.sourceField = data.sourceField;
       this.targetField = data.targetField;
@@ -21,6 +19,5 @@ export class FormDataMapping {
         throw new DataValidationError(`${data.source} is not a valid FormDataMappingSource.`);
       }
     }
-    
   }
 }

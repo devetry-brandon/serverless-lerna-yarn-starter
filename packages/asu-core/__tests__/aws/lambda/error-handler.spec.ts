@@ -29,7 +29,7 @@ describe('error-handler', () => {
       expect(result.body).toBe(error.message);
     });
 
-    it('should set status code to 500 and body to geneic message when anything else thrown', () => {
+    it('should set status code to 500 and body to generic message when anything else thrown', () => {
       // Arrange
       const errorObj = new Error('Some Error');
       const errorString = 'Some Error';

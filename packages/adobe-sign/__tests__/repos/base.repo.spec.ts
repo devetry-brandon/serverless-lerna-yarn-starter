@@ -50,7 +50,7 @@ describe('TemplatesRepo', () => {
       dynamo.put.mockImplementation(() => { throw expectedError; });
 
       // Act / Assert
-      expect(repo.create(template)).rejects.toBe(expectedError);
+      await expect(repo.create(template)).rejects.toThrow(expectedError);
     });
 
     it('should set id on given item, put the item, and return the modified item', async () => {
@@ -81,7 +81,7 @@ describe('TemplatesRepo', () => {
       dynamo.get.mockImplementation(() => { throw expectedError; });
 
       // Act / Assert
-      expect(repo.getTemplateById(templateId)).rejects.toMatchObject(expectedError);
+      await expect(repo.getTemplateById(templateId)).rejects.toThrow(expectedError);
     });
 
     it('should throw 404 when no item returned', async () => {
@@ -94,7 +94,7 @@ describe('TemplatesRepo', () => {
       getReturns(dynamo, {});
 
       // Act / Assert
-      expect(repo.getTemplateById(templateId)).rejects.toMatchObject(expectedError);
+      await expect(repo.getTemplateById(templateId)).rejects.toThrow(expectedError);
     });
 
     it('should query dynamo with the given id and return retrieved item', async () => {
