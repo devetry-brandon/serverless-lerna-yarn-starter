@@ -11,6 +11,6 @@ export class TemplatesService {
   }
 
   async createTemplate(template: Template): Promise<Template> {
-    return await this.templatesRepo.create(template);
+    return await this.templatesRepo.put(template);
   }
 }

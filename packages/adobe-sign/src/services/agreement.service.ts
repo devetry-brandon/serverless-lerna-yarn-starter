@@ -8,6 +8,8 @@ import {UsersRepo} from "../repos/users.repo";
 import {AgreementsRepo} from "../repos/agreements.repo";
 import {Agreement as ASUAgreement} from "../models/asu/agreement";
 import {AgreementStatus} from "../enums/agreement-status";
+import { Webhook } from "../models/adobe-sign/webhook";
+import { WebhookLog } from "../models/asu/webhook-log";
 
 @injectable()
 export class AgreementService {
@@ -42,10 +44,10 @@ export class AgreementService {
       adobeSignId: agreementId,
       adobeSignTemplateId: templateId,
       asuriteId: userId,
-      status: AgreementStatus.InProgress
+      status: AgreementStatus.OutForSignature
     });
 
-    await this.agreementsRepo.create(asuAgreement);
+    await this.agreementsRepo.put(asuAgreement);
 
     return asuAgreement;
   }
@@ -70,5 +72,30 @@ export class AgreementService {
 
   public async getAgreementSigningUrls(id: string): Promise<string> {
     return await this.adobeSignApi.getAgreementSigningUrls(id);
+  }
+
+  public async processWebhook(webhook: Webhook): Promise<void> {
+    const adobeSignAgreement = await this.adobeSignApi.getAgreement(webhook.agreement.id);
+    const dbAgreement = await this.agreementsRepo.getAgreementById(webhook.agreement.id);
+
+    dbAgreement.webhookLogs.push(new WebhookLog({
+      event: webhook.event,
+      timestamp: Date.now()
+    }));
+
+    if (adobeSignAgreement.status === dbAgreement.status) {
+      console.log(`AgreementService.processWebhook: Status already processed. Logging webhook and returning.`);
+      await this.agreementsRepo.put(dbAgreement);
+      return;
+    }
+
+    dbAgreement.status = adobeSignAgreement.status;
+
+    if (dbAgreement.status === AgreementStatus.Signed) {
+      console.log(`AgreementService.processWebhook: Status is complete. Fetching form data and pdf.`);
+      dbAgreement.formData = await this.adobeSignApi.getAgreementFormData(adobeSignAgreement.id);
+    }
+
+    await this.agreementsRepo.put(dbAgreement);
   }
 }

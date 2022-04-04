@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 import "reflect-metadata";
 import {container} from "tsyringe";
-import {AgreementService} from "adobe-sign";
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from "aws-lambda";
+import {AgreementService, Webhook} from "adobe-sign";
+import {APIGatewayProxyEvent, APIGatewayProxyResult, SQSEvent} from "aws-lambda";
 import {lambdaHandleError, lambdaReturnObject} from "asu-core";
 
 export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -23,5 +23,16 @@ export const createSigningUrlAgreement = async (event: APIGatewayProxyEvent): Pr
     return lambdaReturnObject(signingUrlAgreement);
   } catch (error) {
     return lambdaHandleError(error);
+  }
+}
+
+export const processWebhook = async (event: SQSEvent): Promise<void> => {
+  try {
+    const service = container.resolve(AgreementService);
+    const webhook = new Webhook(JSON.parse(event.Records[0].body));
+    await service.processWebhook(webhook);
+  }
+  catch(error) {
+    throw error;
   }
 }

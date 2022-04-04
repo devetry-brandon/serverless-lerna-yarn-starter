@@ -97,6 +97,14 @@ functions:
       - http:
           path: webhook
           method: post
+  processAgreementWebhook:
+    role: lambdaRole
+    handler: lib/agreements-controller.processWebhook
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
 
 resources:
   Resources:
