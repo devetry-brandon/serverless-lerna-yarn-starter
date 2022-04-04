@@ -45,7 +45,7 @@ export abstract class BaseRepo<Type> {
       }).promise();
     }
     catch(error) {
-      console.log(`BaseRepo.get: Error while get item from ${this.table} with id ${id}: ${error}`);
+      console.log(`BaseRepo.getById: Error while get item from ${this.table} with id ${id}: ${error}`);
       throw error;
     }
 

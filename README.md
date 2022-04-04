@@ -146,9 +146,9 @@ export function packageName(): string {
 }
 ```
 
-Let's say in the future you have a service that you want to make available to consumers of this package, `AdobeSignService`.
+Let's say in the future you have a service that you want to make available to consumers of this package, `AgreementService`.
 
-`some-package/src/services/adobe-sign.service.ts`
+`some-package/src/services/agreement.service.ts`
 
 ``` typescript
 export service AdobeService {
@@ -213,10 +213,10 @@ The package will now be included in the package.json of the dependent package.
 You can now use the exported resources of your package in the dependent.
 
 ``` typescript
-import { AdobeSignService } from "adobe-sign";
+import { AgreementService } from "adobe-sign";
 
 export async function main(event, context) {
-  let service = new AdobeSignService();
+  let service = new AgreementService();
   let agreement = service.getAgreement("e4bhsk1288281");
 
   return {

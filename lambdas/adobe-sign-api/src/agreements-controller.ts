@@ -1,26 +1,27 @@
 /* istanbul ignore file */
-
 import "reflect-metadata";
-import { AdobeSignService } from "adobe-sign";
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { container } from "tsyringe";
-
-function formatResponse(statusCode: number, payload: string): APIGatewayProxyResult {
-    return {
-        statusCode,
-        body: payload
-    }
-}
+import {container} from "tsyringe";
+import {AgreementService} from "adobe-sign";
+import {APIGatewayProxyEvent, APIGatewayProxyResult} from "aws-lambda";
+import {lambdaHandleError, lambdaReturnObject} from "asu-core";
 
 export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    try {
-        const service = container.resolve(AdobeSignService);
-        const agreement = await service.getAgreement(event.pathParameters.id);
-        return formatResponse(200, JSON.stringify(agreement))
-    } catch (error) {
-        let errorCode = error.statusCode === 404 ? 404 : 500;
-        let errorMessage = errorCode === 404 ? `Agreement with ID: ${event.pathParameters.id} does not exist.`
-            : 'Internal Service Error';
-        return formatResponse(errorCode, JSON.stringify({error: errorMessage}));
-    }
+  try {
+    const service = container.resolve(AgreementService);
+    const agreement = await service.getAgreement(event.pathParameters.id);
+    return lambdaReturnObject(agreement);
+  } catch (error) {
+    return lambdaHandleError(error);
+  }
+}
+
+export const createSigningUrlAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  try {
+    const service = container.resolve(AgreementService);
+    //@todo CAS auth to retrieve user ID
+    const signingUrlAgreement = await service.createSigningUrlAgreement(event.pathParameters.template_id, 'nleapai');
+    return lambdaReturnObject(signingUrlAgreement);
+  } catch (error) {
+    return lambdaHandleError(error);
+  }
 }
