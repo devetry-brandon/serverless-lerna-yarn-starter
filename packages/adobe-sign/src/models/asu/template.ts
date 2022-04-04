@@ -1,15 +1,13 @@
-import { ObjectWithId } from "../../repos/base.repo";
 import { FormDataMapping } from "./form-data-mapping";
 
-export class Template implements ObjectWithId {
-  id: string;
-  name: string;
+export class Template {
   adobeSignId: string;
+  name: string;
   formDataMappings: FormDataMapping[];
 
   constructor(data?: Partial<Template>) {
     if (data) {
-      this.id = data.id;
+      this.adobeSignId = data.adobeSignId;
       this.name = data.name;
       this.adobeSignId = data.adobeSignId;
       if (data.formDataMappings) {

@@ -18,9 +18,8 @@ describe('TemplateService', () => {
       const { service, templatesRepo } = setup();
       const expectedTemplateId = "143";
       let expectedTemplate = new Template({
-        id: expectedTemplateId,
-        name: "I-9",
-        adobeSignId: "AJ2"
+        adobeSignId: expectedTemplateId,
+        name: "I-9"
       });
 
       templatesRepo.getTemplateById.mockResolvedValue(expectedTemplate);

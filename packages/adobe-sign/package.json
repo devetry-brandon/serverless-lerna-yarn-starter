@@ -28,7 +28,6 @@
   "dependencies": {
     "asu-core": "^1.0.0",
     "axios": "^0.26.1",
-    "tsyringe": "^4.6.0",
-    "uuid": "^8.3.2"
+    "tsyringe": "^4.6.0"
   }
 }

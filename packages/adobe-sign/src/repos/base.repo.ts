@@ -1,22 +1,15 @@
 import { DynamoProvider, EnvironmentVariable, NotFoundError } from "asu-core";
-import { v4 as uuid } from "uuid";
 
-export interface ObjectWithId {
-  id: string;
-}
-
-export abstract class BaseRepo<Type> {
+export abstract class BaseRepo<T> {
   protected table: string;
 
-  constructor(protected connectionProvider: DynamoProvider, table: string) {
+  constructor(protected connectionProvider: DynamoProvider, table: string, protected idProp: string) {
     this.table = `${process.env[EnvironmentVariable.Stage]}-${table}`;
   }
 
-  public async create<Type extends ObjectWithId>(item: Type): Promise<Type> {
+  public async create(item: T): Promise<T> {
     try {
       const conn = this.connectionProvider.resolve();
-
-      item.id = uuid();
 
       await conn.put({
         TableName: this.table,
@@ -31,7 +24,7 @@ export abstract class BaseRepo<Type> {
     }
   }
 
-  protected async getById<T>(id: string): Promise<Partial<T>> {
+  protected async getById(id: string): Promise<Partial<T>> {
     let data = null;
     
     try {
@@ -40,17 +33,17 @@ export abstract class BaseRepo<Type> {
       data = await conn.get({
         TableName: this.table,
         Key: {
-          id: id
+          [this.idProp]: id
         }
       }).promise();
     }
     catch(error) {
-      console.log(`BaseRepo.get: Error while get item from ${this.table} with id ${id}: ${error}`);
+      console.log(`BaseRepo.getById: Error while get item from ${this.table} with id ${id}: ${error}`);
       throw error;
     }
 
     if (data.Item === undefined) {
-      throw new NotFoundError(`No item exists in ${this.table} with id ${id}`);
+      throw new NotFoundError(`No item exists in ${this.table} with ${this.idProp} ${id}`);
     }
   
     return data.Item as any as Partial<T>;
