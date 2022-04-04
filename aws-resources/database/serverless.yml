@@ -10,10 +10,10 @@ resources:
       Properties:
         TableName: ${opt:stage}-templates
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: adobeSignId
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: adobeSignId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -23,14 +23,32 @@ resources:
       Properties:
         TableName: ${opt:stage}-agreements
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: adobeSignId
+            AttributeType: S
+          - AttributeName: asuriteId
+            AttributeType: S
+          - AttributeName: status
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: adobeSignId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: asuriteId-status-index
+            KeySchema:
+              - AttributeName: asuriteId
+                KeyType: HASH
+              - AttributeName: status
+                KeyType: RANGE
+            Projection:
+              ProjectionType: INCLUDE
+              NonKeyAttributes:
+                - adobeSignTemplateId
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
   Outputs:
     TemplatesTableARN:
       Description: "ARN of the TemplatesTable"

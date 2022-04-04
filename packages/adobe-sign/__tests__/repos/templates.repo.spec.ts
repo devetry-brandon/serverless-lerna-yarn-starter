@@ -28,18 +28,18 @@ describe('TemplatesRepo', () => {
       // Arrange
       const { repo, dynamo } = setup();
       const returnedItem = {
-        id: "123",
+        adobeSignId: "123",
         name: "Test"
       };
 
       getReturns(dynamo, { Item: returnedItem });
 
       // Act 
-      const result = await repo.getTemplateById(returnedItem.id);
+      const result = await repo.getTemplateById(returnedItem.adobeSignId);
 
       // Assert
       expect(result).toBeInstanceOf(Template);
-      expect(result.id).toBe(returnedItem.id);
+      expect(result.adobeSignId).toBe(returnedItem.adobeSignId);
       expect(result.name).toBe(returnedItem.name);
     });
   });
