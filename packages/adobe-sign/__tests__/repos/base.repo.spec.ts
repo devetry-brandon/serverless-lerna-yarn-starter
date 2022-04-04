@@ -6,7 +6,7 @@ import { PutItemOutput, GetItemOutput } from "aws-sdk/lib/dynamodb/types";
 import { AWSError } from "aws-sdk/lib/error";
 import { Template } from "../../src/models/asu/template";
 
-describe('TemplatesRepo', () => {
+describe('BaseRepo', () => {
   const expectedStage = "dev";
 
   function setup() {
@@ -53,21 +53,20 @@ describe('TemplatesRepo', () => {
       await expect(repo.create(template)).rejects.toThrow(expectedError);
     });
 
-    it('should set id on given item, put the item, and return the modified item', async () => {
+    it('should put and return the item', async () => {
       // Arrange
       const { repo, dynamo } = setup();
-      const template = new Template();
+      const expectedTemplate = new Template();
       const expectedTable = `${expectedStage}-templates`;
       
       putReturns(dynamo, null);
 
       // Act
-      const result = await repo.create(template);
+      const result = await repo.create(expectedTemplate);
 
       // Assert
-      expect(result.id).toBeDefined();
       expect(dynamo.put.mock.calls[0][0].TableName).toBe(expectedTable);
-      expect(dynamo.put.mock.calls[0][0].Item.id).toBe(result.id);
+      expect(dynamo.put.mock.calls[0][0].Item).toBe(expectedTemplate);
     });
   });
 
@@ -89,7 +88,7 @@ describe('TemplatesRepo', () => {
       const { repo, dynamo } = setup();
       const templateId = "123";
       const table = `${expectedStage}-templates`;
-      const expectedError = new NotFoundError(`No item exists in ${table} with id ${templateId}`);
+      const expectedError = new NotFoundError(`No item exists in ${table} with adobeSignId ${templateId}`);
       
       getReturns(dynamo, {});
 
@@ -101,7 +100,7 @@ describe('TemplatesRepo', () => {
       // Arrange
       const { repo, dynamo } = setup();
       const expectedTemplate = new Template({
-        id: "123",
+        adobeSignId: "123",
         name: "Test Template"
       });
       const expectedTable = `${expectedStage}-templates`;
@@ -109,12 +108,12 @@ describe('TemplatesRepo', () => {
       getReturns(dynamo, {Item: expectedTemplate});
 
       // Act
-      const result = await repo.getTemplateById(expectedTemplate.id);
+      const result = await repo.getTemplateById(expectedTemplate.adobeSignId);
 
       // Assert
       expect(result).toMatchObject(expectedTemplate);
       expect(dynamo.get.mock.calls[0][0].TableName).toBe(expectedTable);
-      expect(dynamo.get.mock.calls[0][0].Key.id).toBe(result.id);
+      expect(dynamo.get.mock.calls[0][0].Key.adobeSignId).toBe(result.adobeSignId);
     });
   });
 });
