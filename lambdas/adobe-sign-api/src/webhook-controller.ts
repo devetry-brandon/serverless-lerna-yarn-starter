@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { container } from "tsyringe";
-import { lambdaHandleError, lambdaReturnNoContent, lambdaReturnObject } from "asu-core";
+import { lambdaHandleError, lambdaReturnObject } from "asu-core";
 import { Webhook, WebhookService } from "adobe-sign";
 
 export const webhookVerification = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
