@@ -85,6 +85,16 @@ export class AdobeSignApi {
     }
   }
 
+  public async getAgreementPdf(id: string): Promise<Buffer> {
+    try {
+      const httpClient = await this.getHttpClient();
+      const result = await httpClient.get(`/agreements/${id}/combinedDocument`, {responseType: 'arraybuffer'});
+      return result.data;
+    } catch (error) {
+      this.handleApiError(error, 'getAgreementFormData');
+    }
+  }
+
   private handleApiError(error: any, fromMethod: string): void {
     if (error.response) {
       console.log(`AdobeSignAPI.${fromMethod} error: ${error.response.data.code} - ${error.response.data.message}`);

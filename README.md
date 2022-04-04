@@ -42,7 +42,7 @@ $ serverless invoke local -f createTemplate --data '{ "body": "{\"name\":\"I9\",
 $ serverless invoke local -f webhookVerification --data '{ "headers": {"X-AdobeSign-ClientId":"4"}}' --region us-west-2
 -- Need to comment out verification line in WebhookService to get this to work
 $ serverless invoke local -f webhookPost --data '{ "body": "{\"event\": \"AGREEMENT_CREATED\",\"agreement\": {\"id\": \"CBJCHBCAABAAN24SWUnGHW-o_NaT5i3O5lKuHiccQ2GP\"}}"}' --region us-west-2
-$ serverless invoke local -f processAgreementWebhook --data '{ "Records": [{"body":"{\"agreement\": {\"id\":\"CBJCHBCAABAAL5Z6kBOpIDH0qYXYK5GLQLq0cednpzD2\"}}"}]}' --region us-west-2
+$ serverless invoke local -f processAgreementWebhook --data '{ "Records": [{"body":"{\"agreement\": {\"id\":\"CBJCHBCAABAAEmjdW_jaJd982pIWD3bRTir68LEUIvJD\"}}"}]}' --region us-west-2
 $ serverless invoke local -f createSigningUrlAgreement --data '{ "pathParameters": {"template_id":"CBJCHBCAABAAA7v8YWZkc2LRy8nh4m_p5C_XFmZkw4tO"}}' --region us-west-2
 ```
 

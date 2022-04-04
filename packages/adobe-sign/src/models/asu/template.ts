@@ -4,6 +4,7 @@ export class Template {
   adobeSignId: string;
   name: string;
   formDataMappings: FormDataMapping[];
+  s3Dir: string;
 
   constructor(data?: Partial<Template>) {
     if (data) {
@@ -13,6 +14,7 @@ export class Template {
       if (data.formDataMappings) {
         this.formDataMappings = data.formDataMappings.map(x => new FormDataMapping(x));
       }
+      this.s3Dir = data.s3Dir;
     }
   }
 }

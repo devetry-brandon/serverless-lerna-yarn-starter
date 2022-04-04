@@ -10,6 +10,7 @@ import {Agreement as ASUAgreement} from "../models/asu/agreement";
 import {AgreementStatus} from "../enums/agreement-status";
 import { Webhook } from "../models/adobe-sign/webhook";
 import { WebhookLog } from "../models/asu/webhook-log";
+import { S3Bucket, S3Service } from "asu-core";
 
 @injectable()
 export class AgreementService {
@@ -17,7 +18,8 @@ export class AgreementService {
       private adobeSignApi: AdobeSignApi,
       private templatesRepo: TemplatesRepo,
       private agreementsRepo: AgreementsRepo,
-      private usersRepo: UsersRepo) {
+      private usersRepo: UsersRepo,
+      private s3Service: S3Service) {
   }
 
   public async getAgreement(id: string): Promise<Agreement> {
@@ -93,9 +95,22 @@ export class AgreementService {
 
     if (dbAgreement.status === AgreementStatus.Signed) {
       console.log(`AgreementService.processWebhook: Status is complete. Fetching form data and pdf.`);
-      dbAgreement.formData = await this.adobeSignApi.getAgreementFormData(adobeSignAgreement.id);
+      const templateTask = this.templatesRepo.getTemplateById(dbAgreement.adobeSignTemplateId);
+      const formDataTask = this.adobeSignApi.getAgreementFormData(adobeSignAgreement.id);
+      const pdfTask = this.adobeSignApi.getAgreementPdf(adobeSignAgreement.id);
+
+      const template = await templateTask;
+      const pdf = await pdfTask;
+      const s3Location = `${template.s3Dir}/${dbAgreement.asuriteId}-${Date.now()}.pdf`;
+
+      await this.s3Service.put(S3Bucket.CompletedDocs, s3Location, pdf);
+
+      dbAgreement.s3Location = s3Location;
+      dbAgreement.formData = await formDataTask;
     }
 
     await this.agreementsRepo.put(dbAgreement);
+
+    // TODO: Send queue messages to integrations
   }
 }
