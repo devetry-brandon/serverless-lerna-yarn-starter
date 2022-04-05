@@ -1,4 +1,4 @@
-import { APIGatewayProxyResult } from "aws-lambda";
+import {APIGatewayProxyResult} from "aws-lambda";
 
 export const lambdaReturn = (response: string, statusCode: number = 200): APIGatewayProxyResult => {
   return {
@@ -13,4 +13,12 @@ export const lambdaReturnObject = (obj: Object, statusCode: number = 200): APIGa
 
 export const lambdaReturnNoContent = (): APIGatewayProxyResult => {
   return lambdaReturn('', 204);
+}
+
+export const lambdaRedirect = (location: string): APIGatewayProxyResult => {
+  return {
+    statusCode: 301,
+    headers: {Location: location},
+    body: ''
+  };
 }
