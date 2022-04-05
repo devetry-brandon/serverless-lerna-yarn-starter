@@ -17,10 +17,10 @@ export const getTemplate = async (event: APIGatewayProxyEvent): Promise<APIGatew
   }
 }
 
-export const createTemplate = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const putTemplate = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     const service = container.resolve(TemplatesService);
-    const template = await service.createTemplate(new Template(JSON.parse(event.body)));
+    const template = await service.putTemplate(new Template(JSON.parse(event.body)));
     return lambdaReturnObject(template);
   }
   catch (error) {

@@ -1,4 +1,4 @@
-import { AwsSecretKey, AwsSecretName, DataValidationError, SecretsManagerService, SqsQueues, SqsService } from "asu-core";
+import { AwsSecretKey, AwsSecretName, DataValidationError, SecretsManagerService, SqsQueue, SqsService } from "asu-core";
 import { injectable } from "tsyringe";
 import { Webhook } from "../adobe-sign";
 
@@ -15,8 +15,8 @@ export class WebhookService {
   }
 
   async processWebhook(webhook: Webhook): Promise<void> {
-    await this.sqsService.queueMessage(
-      SqsQueues.AgreementWebhooks,
+    await this.sqsService.sendMessage(
+      SqsQueue.AgreementWebhooks,
       JSON.stringify(webhook),
       webhook.agreement.id
     );

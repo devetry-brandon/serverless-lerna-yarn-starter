@@ -1,4 +1,4 @@
-import { Agreement } from "../agreement";
+import { Agreement } from "./agreement";
 
 export class Webhook {
   event: string;

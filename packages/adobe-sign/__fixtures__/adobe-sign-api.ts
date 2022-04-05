@@ -30,7 +30,9 @@ export const mockTemplateData = {
         targetField: 'Last.Name',
         defaultValue: '',
       }
-  ]
+  ],
+  s3Dir: 'agreement-title',
+  queues: []
 }
 
 export const mockAgreementCreationData = {
@@ -79,5 +81,5 @@ export const mockAsuAgreementData = {
   adobeSignId: mockAgreementId,
   adobeSignTemplateId: mockTemplateId,
   asuriteId: mockAsuUserId,
-  status: AgreementStatus.InProgress
+  status: AgreementStatus.OutForSignature
 }

@@ -10,7 +10,7 @@ import {Agreement as ASUAgreement} from "../models/asu/agreement";
 import {AgreementStatus} from "../enums/agreement-status";
 import { Webhook } from "../models/adobe-sign/webhook";
 import { WebhookLog } from "../models/asu/webhook-log";
-import { S3Bucket, S3Service } from "asu-core";
+import { S3Bucket, S3Service, SqsService } from "asu-core";
 
 @injectable()
 export class AgreementService {
@@ -19,7 +19,8 @@ export class AgreementService {
       private templatesRepo: TemplatesRepo,
       private agreementsRepo: AgreementsRepo,
       private usersRepo: UsersRepo,
-      private s3Service: S3Service) {
+      private s3Service: S3Service,
+      private sqsService: SqsService) {
   }
 
   public async getAgreement(id: string): Promise<Agreement> {
@@ -103,14 +104,25 @@ export class AgreementService {
       const pdf = await pdfTask;
       const s3Location = `${template.s3Dir}/${dbAgreement.asuriteId}-${Date.now()}.pdf`;
 
+      console.log(`AgreementService.processWebhook: Uploading PDF to ${S3Bucket.CompletedDocs} bucket, key: ${s3Location}`);
       await this.s3Service.put(S3Bucket.CompletedDocs, s3Location, pdf);
 
       dbAgreement.s3Location = s3Location;
       dbAgreement.formData = await formDataTask;
+
+      if (template.queues.length) {
+        console.log(`AgreementService.processWebhook: Queueing up integration webhooks. Queues: [${template.queues.join(',')}].`);
+        let queueTasks = [];
+
+        template.queues.forEach(x => {
+          this.sqsService.sendMessage(x, JSON.stringify(webhook), dbAgreement.adobeSignId)
+        });
+
+        await Promise.all(queueTasks);
+      }
     }
 
+    console.log(`AgreementService.processWebhook: Saving modified agreement.`);
     await this.agreementsRepo.put(dbAgreement);
-
-    // TODO: Send queue messages to integrations
   }
 }

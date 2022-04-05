@@ -1,17 +1,20 @@
 import { injectable } from "tsyringe";
 import { EnvironmentVariable } from "../../asu-core";
+import { SqsQueue } from "../enums/sqs-queue";
 import { SqsProvider } from "../providers/sqs.provider";
 
-export const SqsQueues = {
-  AgreementWebhooks: process.env[EnvironmentVariable.AgreementWebhookQueueUrl]
+const SqsQueueUrls = {
+  [SqsQueue.AgreementWebhooks]: process.env[EnvironmentVariable.AgreementWebhookQueueUrl],
+  [SqsQueue.WorkdayWebhooks]: process.env[EnvironmentVariable.WorkdayWebhookQueueUrl]
 };
 
 @injectable()
 export class SqsService {
   constructor(private sqsProvider: SqsProvider) {}
 
-  async queueMessage(url: string, body: string, groupId: string): Promise<void> {
+  async sendMessage(queue: SqsQueue, body: string, groupId: string): Promise<void> {
     const sqs = this.sqsProvider.resolve();
+    const url = SqsQueueUrls[queue];
     try {
       await sqs.sendMessage({
         QueueUrl: url,

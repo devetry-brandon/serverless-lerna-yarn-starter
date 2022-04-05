@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Mock} from "asu-core";
+import {Mock, S3Service, SqsService} from "asu-core";
 import {AdobeSignApi} from '../../src/apis/adobe-sign/adobe-sign-api';
 import {Agreement} from '../../src/models/adobe-sign/agreement';
 import {AgreementService} from '../../src/services/agreement.service';
@@ -8,6 +8,7 @@ import {UsersRepo} from "../../src/repos/users.repo";
 import {AgreementsRepo} from "../../src/repos/agreements.repo";
 import * as fixture from "../../__fixtures__/adobe-sign-api";
 import {Agreement as ASUAgreement} from "../../src/models/asu/agreement";
+import { AgreementStatus } from "../../src/enums/agreement-status";
 
 describe('AgreementService', () => {
   function setup() {
@@ -15,9 +16,11 @@ describe('AgreementService', () => {
     const templatesRepo = Mock(new TemplatesRepo(null));
     const agreementsRepo = Mock(new AgreementsRepo(null));
     const usersRepo = Mock(new UsersRepo());
-    const service = new AgreementService(adobeApi, templatesRepo, agreementsRepo, usersRepo);
+    const s3Service = Mock(new S3Service(null));
+    const sqsService = Mock(new SqsService(null));
+    const service = new AgreementService(adobeApi, templatesRepo, agreementsRepo, usersRepo, s3Service, sqsService);
 
-    return {service, adobeApi, templatesRepo, agreementsRepo, usersRepo};
+    return {service, adobeApi, templatesRepo, agreementsRepo, usersRepo, s3Service, sqsService};
   }
 
   describe('getAgreement', () => {
@@ -30,7 +33,7 @@ describe('AgreementService', () => {
         name: '[DEMO USE ONLY] Agreement Test 001',
         groupId: 'CBJCHBCAABAACnRhBD9pKDAfZ55583n-4WOlwlvI_RGM',
         type: 'AGREEMENT',
-        status: 'SIGNED',
+        status: AgreementStatus.Signed,
         hasFormFieldData: true,
       });
 

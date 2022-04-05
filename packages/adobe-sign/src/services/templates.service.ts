@@ -10,7 +10,7 @@ export class TemplatesService {
     return await this.templatesRepo.getTemplateById(id);
   }
 
-  async createTemplate(template: Template): Promise<Template> {
+  async putTemplate(template: Template): Promise<Template> {
     return await this.templatesRepo.put(template);
   }
 }

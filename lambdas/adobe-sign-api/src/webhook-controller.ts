@@ -24,9 +24,12 @@ export const webhookPost = async(event: APIGatewayProxyEvent): Promise<APIGatewa
   try {
     const webhookService = container.resolve(WebhookService);
     const clientId = event.headers['X-AdobeSign-ClientId'];
+    const webhook = new Webhook(JSON.parse(event.body));
+
+    console.log(`WebhookController.webhookPost: Received webhook for agreement: ${webhook.agreement.id}. Event: ${webhook.event}.`);
     
     await webhookService.validateClientId(clientId);
-    await webhookService.processWebhook(new Webhook(JSON.parse(event.body)));
+    await webhookService.processWebhook(webhook);
     
     return lambdaReturnObject({
       xAdobeSignClientId: clientId
