@@ -21,7 +21,7 @@ describe('AdobeSignAPI', () => {
       value: {
         response: {
           use: jest.fn()
-        },
+        }
       }
     });
   }
@@ -161,5 +161,72 @@ describe('AdobeSignAPI', () => {
       // Act / Assert
       await expect(adobeApi.getAgreementSigningUrls(fixture.mockAgreementId)).rejects.toThrow(NotFoundError);
     })
+  });
+
+  describe('getAgreementFormData', () => {
+    it('should call api with given id and return json from csv data', async () => {
+      // Arrange
+      const { adobeApi, mockAxios } = setup();
+      const expectedId = "1234";
+      const expectedFormData = {
+        "id": "123",
+        "First.Name": "Brandon",
+        "Last.Name": "Pfeiffer"
+      };
+      const csvData = '"id","First.Name","Last.Name"\n' +
+        `"${expectedFormData['id']}","${expectedFormData['First.Name']}","${expectedFormData['Last.Name']}"\n` +
+        '"321","Noah","Leapai"';
+
+      mockAxios.get.mockResolvedValue({data: csvData});
+
+      // Act
+      const result = await adobeApi.getAgreementFormData(expectedId);
+
+      // Assert
+      expect(mockAxios.get).toBeCalledWith(`/agreements/${expectedId}/formData`);
+      expect(result).toMatchObject(expectedFormData);
+    });
+
+    it('should throw error from api', async () => {
+      // Arrange
+      const { adobeApi, mockAxios } = setup();
+      const expectedId = "1234";
+      const expectedError = new Error('Failure');
+
+      mockAxios.get.mockRejectedValue(expectedError);
+
+      // Act / Assert
+      expect(adobeApi.getAgreementFormData(expectedId)).rejects.toThrow(expectedError);
+    });
+  });
+
+  describe('getAgreementPdf', () => {
+    it('should call api with given id and return buffer', async () => {
+      // Arrange
+      const { adobeApi, mockAxios } = setup();
+      const expectedId = "1234";
+      const expectedBuffer = Buffer.from("asdf");
+
+      mockAxios.get.mockResolvedValue({data: expectedBuffer});
+
+      // Act
+      const result = await adobeApi.getAgreementPdf(expectedId);
+
+      // Assert
+      expect(mockAxios.get).toBeCalledWith(`/agreements/${expectedId}/combinedDocument`, {responseType: 'arraybuffer'});
+      expect(result).toMatchObject(expectedBuffer);
+    });
+
+    it('should throw error from api', async () => {
+      // Arrange
+      const { adobeApi, mockAxios } = setup();
+      const expectedId = "1234";
+      const expectedError = new Error('Failure');
+
+      mockAxios.get.mockRejectedValue(expectedError);
+
+      // Act / Assert
+      expect(adobeApi.getAgreementPdf(expectedId)).rejects.toThrow(expectedError);
+    });
   });
 });

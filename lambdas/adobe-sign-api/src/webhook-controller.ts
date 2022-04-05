@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import "reflect-metadata";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { container } from "tsyringe";
