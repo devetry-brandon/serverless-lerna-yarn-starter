@@ -183,6 +183,9 @@ resources:
                     - "sqs:GetQueueAttributes"
                 - Effect: "Allow"
                   Resource:
-                    - { 'Fn::ImportValue': 'AdobeSign-AdobeSignBucket-Arn' }
+                    Fn::Join:
+                      - ""
+                      - - { 'Fn::ImportValue': 'AdobeSign-AdobeSignBucket-Arn' }
+                        - "/*"
                   Action:
                     - "s3:PutObject"

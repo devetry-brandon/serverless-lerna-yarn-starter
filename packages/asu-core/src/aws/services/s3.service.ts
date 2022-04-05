@@ -10,6 +10,8 @@ export class S3Service {
     const s3 = this.s3Provider.resolve();
     const fullBucketName = `${process.env[EnvironmentVariable.Stage]}-${bucket}`;
 
+    console.log(`S3Service.put: Putting object in bucket ${fullBucketName}. Key: ${key}.`);
+
     await s3.putObject({
       Bucket: fullBucketName,
       Key: key,

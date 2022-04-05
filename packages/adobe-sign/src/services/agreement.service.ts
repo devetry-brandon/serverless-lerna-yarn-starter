@@ -78,8 +78,11 @@ export class AgreementService {
   }
 
   public async processWebhook(webhook: Webhook): Promise<void> {
-    const adobeSignAgreement = await this.adobeSignApi.getAgreement(webhook.agreement.id);
-    const dbAgreement = await this.agreementsRepo.getAgreementById(webhook.agreement.id);
+    const adobeSignAgreementTask = this.adobeSignApi.getAgreement(webhook.agreement.id);
+    const dbAgreementTask = this.agreementsRepo.getAgreementById(webhook.agreement.id);
+
+    const adobeSignAgreement = await adobeSignAgreementTask;
+    const dbAgreement = await dbAgreementTask;
 
     dbAgreement.webhookLogs.push(new WebhookLog({
       event: webhook.event,
@@ -115,7 +118,7 @@ export class AgreementService {
         let queueTasks = [];
 
         template.queues.forEach(x => {
-          this.sqsService.sendMessage(x, JSON.stringify(webhook), dbAgreement.adobeSignId)
+          this.sqsService.sendMessage(x, JSON.stringify(webhook), dbAgreement.adobeSignId);
         });
 
         await Promise.all(queueTasks);

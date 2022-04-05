@@ -3,7 +3,7 @@ import "reflect-metadata";
 import {container} from "tsyringe";
 import {AgreementService, Webhook} from "adobe-sign";
 import {APIGatewayProxyEvent, APIGatewayProxyResult, SQSEvent} from "aws-lambda";
-import {lambdaHandleError, lambdaReturnObject} from "asu-core";
+import {lambdaHandleError, lambdaReturnObject, NotFoundError} from "asu-core";
 
 export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -29,13 +29,16 @@ export const createSigningUrlAgreement = async (event: APIGatewayProxyEvent): Pr
 export const processWebhook = async (event: SQSEvent): Promise<void> => {
   try {
     const service = container.resolve(AgreementService);
-    for (let i = 0; i <= event.Records.length; i++) {
+    for (let i = 0; i < event.Records.length; i++) {
       const webhook = new Webhook(JSON.parse(event.Records[i].body));
       console.log(`AgreementsController.processWebhook: Processing agreement: ${webhook.agreement.id}`);
       await service.processWebhook(webhook);
     }
   }
   catch(error) {
+    if (error instanceof NotFoundError) {
+      return;
+    }
     throw error;
   }
 }
