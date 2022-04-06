@@ -2,9 +2,7 @@ import "reflect-metadata";
 import { DynamoProvider, Mock } from "asu-core";
 import { TemplatesRepo } from "../../src/repos/templates.repo";
 import { Template } from "../../src/models/asu/template";
-import { DynamoDB, Service, Request } from "aws-sdk";
-import { GetItemOutput } from "aws-sdk/lib/dynamodb/types";
-import { AWSError } from "aws-sdk/lib/error";
+import { DynamoDB } from "aws-sdk";
 import { dynamoGetReturns } from "../mocks/mock-dynamo";
 
 describe('TemplatesRepo', () => {
