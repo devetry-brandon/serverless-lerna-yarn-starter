@@ -8,6 +8,7 @@ import {UsersRepo} from "../repos/users.repo";
 import {AgreementsRepo} from "../repos/agreements.repo";
 import {Agreement as ASUAgreement} from "../models/asu/agreement";
 import {AgreementStatus} from "../enums/agreement-status";
+import {CasService} from "asu-core";
 
 @injectable()
 export class AgreementService {
@@ -15,14 +16,16 @@ export class AgreementService {
       private adobeSignApi: AdobeSignApi,
       private templatesRepo: TemplatesRepo,
       private agreementsRepo: AgreementsRepo,
-      private usersRepo: UsersRepo) {
+      private usersRepo: UsersRepo,
+      private casService: CasService) {
   }
 
   public async getAgreement(id: string): Promise<Agreement> {
     return await this.adobeSignApi.getAgreement(id);
   }
 
-  public async createSigningUrlAgreement(templateId: string, userId: string): Promise<object> {
+  public async createSigningUrlAgreement(templateId: string): Promise<{ agreement_id: string, signing_url: string }> {
+    const userId = await this.casService.getAuthenticatedUserId();
     const agreement = await this.createAgreement(templateId, userId);
     const signingUrl = await this.getAgreementSigningUrls(agreement.adobeSignId);
     return {

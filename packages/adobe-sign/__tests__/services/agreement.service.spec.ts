@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Mock} from "asu-core";
+import {CasService, Mock} from "asu-core";
 import {AdobeSignApi} from '../../src/apis/adobe-sign/adobe-sign-api';
 import {Agreement} from '../../src/models/adobe-sign/agreement';
 import {AgreementService} from '../../src/services/agreement.service';
@@ -15,9 +15,10 @@ describe('AgreementService', () => {
     const templatesRepo = Mock(new TemplatesRepo(null));
     const agreementsRepo = Mock(new AgreementsRepo(null));
     const usersRepo = Mock(new UsersRepo());
-    const service = new AgreementService(adobeApi, templatesRepo, agreementsRepo, usersRepo);
+    const casService = Mock(new CasService(null));
+    const service = new AgreementService(adobeApi, templatesRepo, agreementsRepo, usersRepo, casService);
 
-    return {service, adobeApi, templatesRepo, agreementsRepo, usersRepo};
+    return {service, adobeApi, templatesRepo, agreementsRepo, usersRepo, casService};
   }
 
   describe('getAgreement', () => {
@@ -85,12 +86,12 @@ describe('AgreementService', () => {
   describe('createSigningUrlAgreement', () => {
     it('should return the id and signing URL of the newly created agreement', async () => {
       // Arrange
-      let {service, adobeApi} = setup();
+      let {service, adobeApi, casService} = setup();
       jest.spyOn(service, 'createAgreement').mockResolvedValue(new ASUAgreement(fixture.mockAsuAgreementData));
       adobeApi.getAgreementSigningUrls.mockResolvedValue(fixture.mockSigningUrl);
-
+      casService.getAuthenticatedUserId.mockResolvedValue('testuser');
       // Act
-      let result = await service.createSigningUrlAgreement(fixture.mockTemplateId, fixture.mockAsuUserId);
+      let result = await service.createSigningUrlAgreement(fixture.mockTemplateId);
 
       // Assert
       expect(result).toMatchObject({

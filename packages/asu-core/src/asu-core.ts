@@ -11,6 +11,7 @@ export * from "./http/providers/axios.provider";
 export * from "./aws/providers/dynamo.provider";
 
 // services
+export * from "./auth/services/cas.service";
 export * from "./aws/services/secrets-manager.service";
 
 // testing helpers
@@ -20,6 +21,7 @@ export * from "./testing/mocked-cache-helper-functions";
 // errors
 export * from "./errors/not-found.error";
 export * from "./errors/data-validation.error";
+export * from "./errors/unauthenticated.error";
 
 // functions
 export * from "./aws/lambda/error-handler";

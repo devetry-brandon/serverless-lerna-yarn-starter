@@ -3,7 +3,7 @@ import "reflect-metadata";
 import {container} from "tsyringe";
 import {AgreementService} from "adobe-sign";
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from "aws-lambda";
-import {lambdaHandleError, lambdaReturnObject} from "asu-core";
+import {CasService, lambdaHandleError, lambdaRedirect, lambdaReturnObject} from "asu-core";
 
 export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -16,12 +16,14 @@ export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGate
 }
 
 export const createSigningUrlAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  try {
-    const service = container.resolve(AgreementService);
-    //@todo CAS auth to retrieve user ID
-    const signingUrlAgreement = await service.createSigningUrlAgreement(event.pathParameters.template_id, 'nleapai');
-    return lambdaReturnObject(signingUrlAgreement);
-  } catch (error) {
-    return lambdaHandleError(error);
-  }
+  const authService = container.resolve(CasService);
+  return await authService.authenticate(event, async () => {
+    try {
+      const service = container.resolve(AgreementService);
+      const signingUrlAgreement = await service.createSigningUrlAgreement(event.pathParameters.template_id);
+      return lambdaRedirect(signingUrlAgreement.signing_url);
+    } catch (apiError) {
+      return lambdaHandleError(apiError);
+    }
+  });
 }
