@@ -37,7 +37,7 @@ Run test to make sure project is setup correctly:
 ``` bash
 $ cd lambdas/adobe-sign-api
 $ serverless invoke local -f getTemplate --data '{ "pathParameters": {"id":"1be3f61a-e9fe-4247-9463-98856a6bf6ad"}}' --region us-west-2
-$ serverless invoke local -f putTemplate --data '{ "body": "{\"name\":\"I9\", \"adobeSignId\": \"CBJCHBCAABAAA7v8YWZkc2LRy8nh4m_p5C_XFmZkw4tO\", \"formDataMappings\": [{\"source\":\"UserInfo\", \"sourceField\":\"firstName\", \"targetField\":\"First.Name\", \"defaultValue\":\"Brandon\"}], \"s3Dir\":\"federal-i9\", \"queues\":[\"WorkdayWebhooks\"]}"}' --region us-west-2
+$ serverless invoke local -f putTemplate --data '{ "body": "{\"name\":\"I9\", \"adobeSignId\": \"CBJCHBCAABAAA7v8YWZkc2LRy8nh4m_p5C_XFmZkw4tO\", \"formDataMappings\": [{\"source\":\"UserInfo\", \"sourceField\":\"firstName\", \"targetField\":\"First.Name\", \"defaultValue\":\"Brandon\"}], \"s3Dir\":\"federal-i9\", \"integrationQueues\":[\"WorkdayWebhooks\"]}"}' --region us-west-2
 -- Should get 400 because you cannot connect to cache locally to verify client it
 $ serverless invoke local -f webhookVerification --data '{ "headers": {"X-AdobeSign-ClientId":"4"}}' --region us-west-2
 -- Need to comment out verification line in WebhookService to get this to work

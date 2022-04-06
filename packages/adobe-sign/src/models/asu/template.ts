@@ -6,7 +6,7 @@ export class Template {
   name: string;
   formDataMappings: FormDataMapping[];
   s3Dir: string;
-  queues: SqsQueue[];
+  integrationQueues: SqsQueue[];
 
   constructor(data?: Partial<Template>) {
     if (data) {
@@ -17,7 +17,7 @@ export class Template {
         ? this.formDataMappings = data.formDataMappings.map(x => new FormDataMapping(x))
         : [];
       this.s3Dir = data.s3Dir;
-      this.queues = data.queues || [];
+      this.integrationQueues = data.integrationQueues || [];
     }
   }
 }

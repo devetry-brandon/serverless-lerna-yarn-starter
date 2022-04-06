@@ -114,11 +114,11 @@ export class AgreementService {
       dbAgreement.s3Location = s3Location;
       dbAgreement.formData = await formDataTask;
 
-      if (template.queues.length) {
-        console.log(`AgreementService.processWebhook: Queueing up integration webhooks. Queues: [${template.queues.join(',')}].`);
+      if (template.integrationQueues.length) {
+        console.log(`AgreementService.processWebhook: Queueing up integration webhooks. Queues: [${template.integrationQueues.join(',')}].`);
         let queueTasks = [];
 
-        template.queues.forEach(x => {
+        template.integrationQueues.forEach(x => {
           this.sqsService.sendMessage(x, JSON.stringify(webhook), dbAgreement.adobeSignId);
         });
 

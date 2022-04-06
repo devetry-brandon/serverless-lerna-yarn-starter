@@ -117,7 +117,7 @@ describe('AgreementService', () => {
     const template = new Template({
       adobeSignId: "4321",
       s3Dir: "templates",
-      queues: [
+      integrationQueues: [
         SqsQueue.WorkdayWebhooks,
         SqsQueue.AgreementWebhooks
       ]
@@ -240,7 +240,7 @@ describe('AgreementService', () => {
         expectedS3Location,
         expectedPdf
       );
-      template.queues.forEach(x => {
+      template.integrationQueues.forEach(x => {
         expect(sqsService.sendMessage).toBeCalledWith(x, JSON.stringify(webhook), dbAgreement.adobeSignId);
       });
     });

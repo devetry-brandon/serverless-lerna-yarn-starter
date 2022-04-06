@@ -32,7 +32,7 @@ export const mockTemplateData = {
       }
   ],
   s3Dir: 'agreement-title',
-  queues: []
+  integrationQueues: []
 }
 
 export const mockAgreementCreationData = {
