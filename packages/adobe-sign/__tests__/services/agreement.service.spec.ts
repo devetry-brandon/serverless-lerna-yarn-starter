@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import {Mock, S3Bucket, S3Service, SqsQueue, SqsService, TimeService} from "asu-core";
+import {CasService, Mock, S3Bucket, S3Service, SqsQueue, SqsService, TimeService} from "asu-core";
 import {AdobeSignApi} from '../../src/apis/adobe-sign/adobe-sign-api';
 import {Agreement} from '../../src/models/adobe-sign/agreement';
 import {AgreementService} from '../../src/services/agreement.service';
@@ -19,14 +19,15 @@ describe('AgreementService', () => {
     const adobeApi = Mock(new AdobeSignApi(null, null));
     const templatesRepo = Mock(new TemplatesRepo(null));
     const agreementsRepo = Mock(new AgreementsRepo(null));
+    const casService = Mock(new CasService(null));
     const usersRepo = Mock(new UsersRepo());
     const s3Service = Mock(new S3Service(null));
     const sqsService = Mock(new SqsService(null));
     const timeService = Mock(new TimeService());
     const service = new AgreementService(
-      adobeApi, templatesRepo, agreementsRepo, usersRepo, s3Service, sqsService, timeService);
+      adobeApi, templatesRepo, agreementsRepo, usersRepo, casService, s3Service, sqsService, timeService);
 
-    return {service, adobeApi, templatesRepo, agreementsRepo, usersRepo, s3Service, sqsService, timeService};
+    return {service, adobeApi, templatesRepo, agreementsRepo, usersRepo, casService, s3Service, sqsService, timeService};
   }
 
   describe('getAgreement', () => {
@@ -94,12 +95,12 @@ describe('AgreementService', () => {
   describe('createSigningUrlAgreement', () => {
     it('should return the id and signing URL of the newly created agreement', async () => {
       // Arrange
-      let {service, adobeApi} = setup();
+      let {service, adobeApi, casService} = setup();
       jest.spyOn(service, 'createAgreement').mockResolvedValue(new ASUAgreement(fixture.mockAsuAgreementData));
       adobeApi.getAgreementSigningUrls.mockResolvedValue(fixture.mockSigningUrl);
-
+      casService.getAuthenticatedUserId.mockResolvedValue('testuser');
       // Act
-      let result = await service.createSigningUrlAgreement(fixture.mockTemplateId, fixture.mockAsuUserId);
+      let result = await service.createSigningUrlAgreement(fixture.mockTemplateId);
 
       // Assert
       expect(result).toMatchObject({

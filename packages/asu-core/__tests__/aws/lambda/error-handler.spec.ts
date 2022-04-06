@@ -1,7 +1,6 @@
 import "reflect-metadata"
-import { NotFoundError } from "../../../src/errors/not-found.error";
 import { lambdaHandleError } from "../../../src/aws/lambda/error-handler";
-import { DataValidationError } from "../../../src/asu-core";
+import { DataValidationError, NotFoundError, UnauthenticatedError } from "../../../src/asu-core";
 
 describe('error-handler', () => {
   describe('lambdaHandleError', () => {
@@ -26,6 +25,18 @@ describe('error-handler', () => {
 
       // Assert
       expect(result.statusCode).toBe(400);
+      expect(result.body).toBe(error.message);
+    });
+
+    it('should set status code to 401 and body to error message when UnauthenticatedError thrown', () => {
+      // Arrange
+      const error = new UnauthenticatedError('Authentication request failed');
+
+      // Act
+      const result = lambdaHandleError(error);
+
+      // Assert
+      expect(result.statusCode).toBe(401);
       expect(result.body).toBe(error.message);
     });
 

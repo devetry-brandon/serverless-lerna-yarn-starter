@@ -10,7 +10,7 @@ import {Agreement as ASUAgreement} from "../models/asu/agreement";
 import {AgreementStatus} from "../enums/agreement-status";
 import { Webhook } from "../models/adobe-sign/webhook";
 import { WebhookLog } from "../models/asu/webhook-log";
-import { S3Bucket, S3Service, SqsService, TimeService } from "asu-core";
+import { CasService, S3Bucket, S3Service, SqsService, TimeService } from "asu-core";
 
 @injectable()
 export class AgreementService {
@@ -19,6 +19,7 @@ export class AgreementService {
       private templatesRepo: TemplatesRepo,
       private agreementsRepo: AgreementsRepo,
       private usersRepo: UsersRepo,
+      private casService: CasService,
       private s3Service: S3Service,
       private sqsService: SqsService,
       private timeService: TimeService) {
@@ -28,7 +29,8 @@ export class AgreementService {
     return await this.adobeSignApi.getAgreement(id);
   }
 
-  public async createSigningUrlAgreement(templateId: string, userId: string): Promise<object> {
+  public async createSigningUrlAgreement(templateId: string): Promise<{ agreement_id: string, signing_url: string }> {
+    const userId = await this.casService.getAuthenticatedUserId();
     const agreement = await this.createAgreement(templateId, userId);
     const signingUrl = await this.getAgreementSigningUrls(agreement.adobeSignId);
     return {
