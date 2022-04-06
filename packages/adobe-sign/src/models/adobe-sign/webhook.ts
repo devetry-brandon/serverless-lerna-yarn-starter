@@ -1,8 +1,9 @@
+import { WebhookEvent } from "../../enums/webhook-event";
 import { Agreement } from "./agreement";
 
 export class Webhook {
-  event: string;
-  agreement: Agreement
+  event: WebhookEvent;
+  agreement: Agreement;
 
   constructor(data?: Partial<Webhook>) {
     if (data) {

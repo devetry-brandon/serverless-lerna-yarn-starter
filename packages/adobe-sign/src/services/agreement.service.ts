@@ -10,7 +10,7 @@ import {Agreement as ASUAgreement} from "../models/asu/agreement";
 import {AgreementStatus} from "../enums/agreement-status";
 import { Webhook } from "../models/adobe-sign/webhook";
 import { WebhookLog } from "../models/asu/webhook-log";
-import { S3Bucket, S3Service, SqsService } from "asu-core";
+import { S3Bucket, S3Service, SqsService, TimeService } from "asu-core";
 
 @injectable()
 export class AgreementService {
@@ -20,7 +20,8 @@ export class AgreementService {
       private agreementsRepo: AgreementsRepo,
       private usersRepo: UsersRepo,
       private s3Service: S3Service,
-      private sqsService: SqsService) {
+      private sqsService: SqsService,
+      private timeService: TimeService) {
   }
 
   public async getAgreement(id: string): Promise<Agreement> {
@@ -86,7 +87,7 @@ export class AgreementService {
 
     dbAgreement.webhookLogs.push(new WebhookLog({
       event: webhook.event,
-      timestamp: Date.now()
+      timestamp: this.timeService.currentTimestamp()
     }));
 
     if (adobeSignAgreement.status === dbAgreement.status) {
@@ -105,7 +106,7 @@ export class AgreementService {
 
       const template = await templateTask;
       const pdf = await pdfTask;
-      const s3Location = `${template.s3Dir}/${dbAgreement.asuriteId}-${Date.now()}.pdf`;
+      const s3Location = `${template.s3Dir}/${dbAgreement.asuriteId}-${this.timeService.currentTimestamp()}.pdf`;
 
       console.log(`AgreementService.processWebhook: Uploading PDF to ${S3Bucket.CompletedDocs} bucket, key: ${s3Location}`);
       await this.s3Service.put(S3Bucket.CompletedDocs, s3Location, pdf);

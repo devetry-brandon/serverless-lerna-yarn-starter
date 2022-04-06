@@ -15,6 +15,7 @@ export * from "./aws/providers/dynamo.provider";
 export * from "./aws/services/secrets-manager.service";
 export * from "./aws/services/sqs.service";
 export * from "./aws/services/s3.service";
+export * from "./util/services/time.service";
 
 // testing helpers
 export * from "./testing/mock-provider";
