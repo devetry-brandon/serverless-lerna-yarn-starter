@@ -7,15 +7,21 @@ export class S3Service {
   constructor(private s3Provider: S3Provider) {}
 
   async put(bucket: string, key: string, body: Buffer): Promise<void> {
-    const s3 = this.s3Provider.resolve();
-    const fullBucketName = `${process.env[EnvironmentVariable.Stage]}-${bucket}`;
+    try {
+      const s3 = this.s3Provider.resolve();
+      const fullBucketName = `${process.env[EnvironmentVariable.Stage]}-${bucket}`;
 
-    console.log(`S3Service.put: Putting object in bucket ${fullBucketName}. Key: ${key}.`);
+      console.log(`S3Service.put: Putting object in bucket ${fullBucketName}. Key: ${key}.`);
 
-    await s3.putObject({
-      Bucket: fullBucketName,
-      Key: key,
-      Body: body
-    }).promise();
+      await s3.putObject({
+        Bucket: fullBucketName,
+        Key: key,
+        Body: body
+      }).promise();
+    }
+    catch (error) {
+      console.log(`S3Service.put: Error while trying to put object in bucket ${bucket} at ${key}.`);
+      throw error;
+    }
   }
 }
