@@ -89,7 +89,7 @@ describe('AgreementService', () => {
       let {service, adobeApi, casService} = setup();
       jest.spyOn(service, 'createAgreement').mockResolvedValue(new ASUAgreement(fixture.mockAsuAgreementData));
       adobeApi.getAgreementSigningUrls.mockResolvedValue(fixture.mockSigningUrl);
-      casService.getCasUser.mockResolvedValue('testuser');
+      casService.getAuthenticatedUserId.mockResolvedValue('testuser');
       // Act
       let result = await service.createSigningUrlAgreement(fixture.mockTemplateId);
 

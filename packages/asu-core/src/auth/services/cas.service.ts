@@ -12,7 +12,7 @@ const CAS_HOST = 'https://weblogin.asu.edu/cas';
 @singleton()
 export class CasService {
   private httpClient: Axios;
-  private authUser: string;
+  private authenticatedUserId: string;
 
   constructor(private axiosProvider: AxiosProvider) {
   }
@@ -28,10 +28,10 @@ export class CasService {
   }
 
   public async authenticate(event: APIGatewayProxyEvent, callback: ()=>Promise<APIGatewayProxyResult>): Promise<APIGatewayProxyResult> {
-    // Bypass auth on dev
+    // Option to bypass auth on dev, sets user to my ASURITE id
     if (process.env[EnvironmentVariable.Stage] === 'dev') {
       if (event.queryStringParameters && event.queryStringParameters.skip_auth === 'y') {
-        this.authUser = 'skipped_auth';
+        this.authenticatedUserId = 'nleapai';
         return await callback();
       }
     }
@@ -55,7 +55,7 @@ export class CasService {
       const {authenticationSuccess, authenticationFailure} = authResponse.data.serviceResponse;
 
       if (authenticationSuccess) {
-        this.authUser = authenticationSuccess.user;
+        this.authenticatedUserId = authenticationSuccess.user;
         return await callback();
       }
 
@@ -66,12 +66,12 @@ export class CasService {
     }
   }
 
-  public async getCasUser(): Promise<string> {
-    if (!this.authUser) {
+  public async getAuthenticatedUserId(): Promise<string> {
+    if (!this.authenticatedUserId) {
       throw new UnauthenticatedError('No authenticated user is set in CAS Service');
     }
 
-    return this.authUser;
+    return this.authenticatedUserId;
   }
 
 }

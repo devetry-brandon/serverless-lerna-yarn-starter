@@ -25,7 +25,7 @@ export class AgreementService {
   }
 
   public async createSigningUrlAgreement(templateId: string): Promise<{ agreement_id: string, signing_url: string }> {
-    const userId = await this.casService.getCasUser();
+    const userId = await this.casService.getAuthenticatedUserId();
     const agreement = await this.createAgreement(templateId, userId);
     const signingUrl = await this.getAgreementSigningUrls(agreement.adobeSignId);
     return {

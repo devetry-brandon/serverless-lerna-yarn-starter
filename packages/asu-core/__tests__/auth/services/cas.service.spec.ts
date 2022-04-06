@@ -169,7 +169,7 @@ describe('CasService', () => {
     });
   });
 
-  describe('getCasUser', () => {
+  describe('getAuthenticatedUserId', () => {
     it('should return ASURITE ID string when user is authenticated', async () => {
       // Arrange
       const {service, mockApiEvent, mockAxios} = setup();
@@ -191,7 +191,7 @@ describe('CasService', () => {
 
       // Act
       await service.authenticate(mockApiEvent, mockCallback);
-      const result = await service.getCasUser();
+      const result = await service.getAuthenticatedUserId();
 
       // Assert
       expect(result).toBe(expectedAuthUser);
@@ -203,7 +203,7 @@ describe('CasService', () => {
       const expectedError = new UnauthenticatedError('No authenticated user is set in CAS Service');
 
       // Assert
-      await expect(service.getCasUser()).rejects.toThrow(expectedError);
+      await expect(service.getAuthenticatedUserId()).rejects.toThrow(expectedError);
     });
   });
 })
