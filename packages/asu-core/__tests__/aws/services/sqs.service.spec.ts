@@ -32,7 +32,7 @@ describe('SqsService', () => {
       };
 
       // Act / Assert
-      expect(service.sendMessage(SqsQueue.WorkdayWebhooks, expectedBody, expectedGroupId)).rejects.toThrowError(expectedError);
+      await expect(service.sendMessage(SqsQueue.WorkdayWebhooks, expectedBody, expectedGroupId)).rejects.toThrowError(expectedError);
       expect(sqs.sendMessage).toBeCalledWith({
         QueueUrl: expectedUrl,
         MessageGroupId: expectedGroupId,

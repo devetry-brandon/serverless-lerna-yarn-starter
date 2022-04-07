@@ -36,7 +36,7 @@ describe('S3Service', () => {
       s3.putObject.mockReturnValue(mockPutReturn);
 
       // Act / Assert
-      expect(service.put(givenBucket, expectedKey, expectedObject)).rejects.toThrowError(error);
+      await expect(service.put(givenBucket, expectedKey, expectedObject)).rejects.toThrowError(error);
       expect(s3.putObject).toBeCalledWith({
         Bucket: expectedFullBucketName,
         Key: expectedKey,

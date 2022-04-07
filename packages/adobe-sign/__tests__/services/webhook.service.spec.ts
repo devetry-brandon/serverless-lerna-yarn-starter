@@ -24,7 +24,7 @@ describe('WebhookService', () => {
       secretManagerService.getSecret.mockResolvedValue(storedClientId);
       
       // Act / Assert
-      expect(service.validateClientId("4321")).rejects.toThrow(DataValidationError);
+      await expect(service.validateClientId("4321")).rejects.toThrow(DataValidationError);
     });
 
     it('should call the secrets manager for the correct secret and not throw if given client id matches', async () => {

@@ -9,7 +9,7 @@ import { SqsProvider } from "../providers/sqs.provider";
 export class SqsService {
   constructor(private sqsProvider: SqsProvider) {}
 
-  async sendMessage(queue: SqsQueue, body: string, groupId: string): Promise<void> {
+  public async sendMessage(queue: SqsQueue, body: string, groupId: string): Promise<void> {
     const sqsQueueUrls = {
       [SqsQueue.AgreementWebhooks]: process.env[EnvironmentVariable.AgreementWebhookQueueUrl],
       [SqsQueue.WorkdayWebhooks]: process.env[EnvironmentVariable.WorkdayWebhookQueueUrl]

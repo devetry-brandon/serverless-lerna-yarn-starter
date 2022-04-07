@@ -79,11 +79,10 @@ export class AgreementService {
   }
 
   public async processWebhook(webhook: Webhook): Promise<void> {
-    const adobeSignAgreementTask = this.adobeSignApi.getAgreement(webhook.agreement.id);
-    const dbAgreementTask = this.agreementsRepo.getAgreementById(webhook.agreement.id);
-
-    const adobeSignAgreement = await adobeSignAgreementTask;
-    const dbAgreement = await dbAgreementTask;
+    const [adobeSignAgreement, dbAgreement] = await Promise.all([
+      this.adobeSignApi.getAgreement(webhook.agreement.id),
+      this.agreementsRepo.getAgreementById(webhook.agreement.id)
+    ]);
 
     dbAgreement.webhookLogs.push(new WebhookLog({
       event: webhook.event,
@@ -100,19 +99,18 @@ export class AgreementService {
 
     if (dbAgreement.status === AgreementStatus.Signed) {
       console.log(`AgreementService.processWebhook: Status is complete. Fetching form data and pdf.`);
-      const templateTask = this.templatesRepo.getTemplateById(dbAgreement.adobeSignTemplateId);
-      const formDataTask = this.adobeSignApi.getAgreementFormData(adobeSignAgreement.id);
-      const pdfTask = this.adobeSignApi.getAgreementPdf(adobeSignAgreement.id);
-
-      const template = await templateTask;
-      const pdf = await pdfTask;
+      const [template, pdf, formData] = await Promise.all([
+        this.templatesRepo.getTemplateById(dbAgreement.adobeSignTemplateId),
+        this.adobeSignApi.getAgreementPdf(adobeSignAgreement.id),
+        this.adobeSignApi.getAgreementFormData(adobeSignAgreement.id)
+      ]);
       const s3Location = `${template.s3Dir}/${dbAgreement.asuriteId}-${this.timeService.currentTimestamp()}.pdf`;
 
       console.log(`AgreementService.processWebhook: Uploading PDF to ${S3Bucket.CompletedDocs} bucket, key: ${s3Location}`);
       await this.s3Service.put(S3Bucket.CompletedDocs, s3Location, pdf);
 
       dbAgreement.s3Location = s3Location;
-      dbAgreement.formData = await formDataTask;
+      dbAgreement.formData = formData;
 
       if (template.integrationQueues.length) {
         console.log(`AgreementService.processWebhook: Queueing up integration webhooks. Queues: [${template.integrationQueues.join(',')}].`);

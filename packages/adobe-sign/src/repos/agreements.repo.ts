@@ -10,12 +10,12 @@ export class AgreementsRepo extends BaseRepo<Agreement> {
     super(connectionProvider, 'agreements', 'adobeSignId');
   }
 
-  async getAgreementById(id: string): Promise<Agreement> {
+  public async getAgreementById(id: string): Promise<Agreement> {
     const result = await this.getById(id);
     return new Agreement(result);
   }
 
-  async getAgreementsForUserWithStatus(asuriteId: string, status: AgreementStatus): Promise<Agreement[]> {
+  public async getAgreementsForUserWithStatus(asuriteId: string, status: AgreementStatus): Promise<Agreement[]> {
     const conn = this.connectionProvider.resolve();
 
     const result = await conn.query({

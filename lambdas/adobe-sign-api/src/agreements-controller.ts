@@ -29,8 +29,8 @@ export const createSigningUrlAgreement = async (event: APIGatewayProxyEvent): Pr
 export const processWebhook = async (event: SQSEvent): Promise<void> => {
   try {
     const service = container.resolve(AgreementService);
-    for (let i = 0; i < event.Records.length; i++) {
-      const webhook = new Webhook(JSON.parse(event.Records[i].body));
+    for (let record of event.Records) {
+      const webhook = new Webhook(JSON.parse(record.body));
       console.log(`AgreementsController.processWebhook: Processing agreement: ${webhook.agreement.id}`);
       await service.processWebhook(webhook);
     }

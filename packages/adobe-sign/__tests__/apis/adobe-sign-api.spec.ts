@@ -196,7 +196,7 @@ describe('AdobeSignAPI', () => {
       mockAxios.get.mockRejectedValue(expectedError);
 
       // Act / Assert
-      expect(adobeApi.getAgreementFormData(expectedId)).rejects.toThrow(expectedError);
+      await expect(adobeApi.getAgreementFormData(expectedId)).rejects.toThrow(expectedError);
     });
   });
 
@@ -226,7 +226,7 @@ describe('AdobeSignAPI', () => {
       mockAxios.get.mockRejectedValue(expectedError);
 
       // Act / Assert
-      expect(adobeApi.getAgreementPdf(expectedId)).rejects.toThrow(expectedError);
+      await expect(adobeApi.getAgreementPdf(expectedId)).rejects.toThrow(expectedError);
     });
   });
 });
