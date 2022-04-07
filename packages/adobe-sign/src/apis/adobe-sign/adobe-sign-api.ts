@@ -54,14 +54,14 @@ export class AdobeSignApi {
     let retryCount = 0;
     try {
       const httpClient = await this.getHttpClient();
+      /* istanbul ignore next */
       httpClient.interceptors.response.use(successfulRes => successfulRes, async error => {
-        /* istanbul ignore next */
         if (error.response.data.code === 'AGREEMENT_NOT_EXPOSED' && retryCount < 5) {
           retryCount++;
           await new Promise(resolve => setTimeout(resolve, 1000));
           return await httpClient.request(error.config);
         }
-        /* istanbul ignore next */
+
         return Promise.reject(error);
       });
       const linksResponse = await httpClient.get(`/agreements/${id}/signingUrls`);
