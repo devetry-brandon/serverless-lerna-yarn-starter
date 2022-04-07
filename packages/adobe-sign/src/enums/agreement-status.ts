@@ -1,4 +1,5 @@
 export enum AgreementStatus {
-  InProgress = 'IN_PROGRESS',
-  Complete = 'COMPLETE'
+  OutForSignature = 'OUT_FOR_SIGNATURE',
+  Signed = 'SIGNED',
+  Cancelled = 'CANCELLED'
 }

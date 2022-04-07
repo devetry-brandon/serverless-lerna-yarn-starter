@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 import "reflect-metadata";
 import {container} from "tsyringe";
-import {AgreementService} from "adobe-sign";
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from "aws-lambda";
-import {CasService, lambdaHandleError, lambdaRedirect, lambdaReturnObject} from "asu-core";
+import {AgreementService, Webhook} from "adobe-sign";
+import {APIGatewayProxyEvent, APIGatewayProxyResult, SQSEvent} from "aws-lambda";
+import {CasService, lambdaHandleError, lambdaRedirect, lambdaReturnObject, NotFoundError} from "asu-core";
 
 export const getAgreement = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -26,4 +26,21 @@ export const createSigningUrlAgreement = async (event: APIGatewayProxyEvent): Pr
       return lambdaHandleError(apiError);
     }
   });
+}
+
+export const processWebhook = async (event: SQSEvent): Promise<void> => {
+  try {
+    const service = container.resolve(AgreementService);
+    for (let record of event.Records) {
+      const webhook = new Webhook(JSON.parse(record.body));
+      console.log(`AgreementsController.processWebhook: Processing agreement: ${webhook.agreement.id}`);
+      await service.processWebhook(webhook);
+    }
+  }
+  catch(error) {
+    if (error instanceof NotFoundError) {
+      return;
+    }
+    throw error;
+  }
 }

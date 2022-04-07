@@ -33,7 +33,7 @@ describe('TemplateService', () => {
     });
   });
 
-  describe('createTemplate', () => {
+  describe('putTemplate', () => {
     it('should call TemplatesRepo with the given template', async () => {
       // Arrange
       const { service, templatesRepo } = setup();
@@ -42,13 +42,13 @@ describe('TemplateService', () => {
         adobeSignId: "AJ2"
       });
 
-      templatesRepo.create.mockResolvedValue(expectedTemplate);
+      templatesRepo.put.mockResolvedValue(expectedTemplate);
       
       // Act
-      const result = await service.createTemplate(expectedTemplate);
+      const result = await service.putTemplate(expectedTemplate);
 
       // Assert
-      expect(templatesRepo.create).toBeCalledWith(expectedTemplate);
+      expect(templatesRepo.put).toBeCalledWith(expectedTemplate);
       expect(result).toEqual(expectedTemplate);
     });
   });

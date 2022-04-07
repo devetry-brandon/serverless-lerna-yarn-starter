@@ -7,7 +7,7 @@ export abstract class BaseRepo<T> {
     this.table = `${process.env[EnvironmentVariable.Stage]}-${table}`;
   }
 
-  public async create(item: T): Promise<T> {
+  public async put(item: T): Promise<T> {
     try {
       const conn = this.connectionProvider.resolve();
 

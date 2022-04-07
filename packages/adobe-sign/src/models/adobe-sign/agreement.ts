@@ -1,9 +1,11 @@
+import { AgreementStatus } from "../../enums/agreement-status";
+
 export class Agreement {
   id: string;
   name: string;
   groupId: string;
   type: string;
-  status: string;
+  status: AgreementStatus;
   hasFormFieldData: boolean;
 
   constructor(data?: Partial<Agreement>) {

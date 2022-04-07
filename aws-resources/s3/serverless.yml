@@ -1,0 +1,20 @@
+service: adobe-sign-s3-buckets
+
+provider:
+  name: aws
+
+resources:
+  Resources:
+    AdobeSignBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${opt:stage}-completed-docs
+  Outputs:
+    AdobeSignBucketArn:
+      Description: "ARN of the AdobeSignBucket"
+      Value:
+        Fn::GetAtt:
+          - AdobeSignBucket
+          - Arn
+      Export:
+        Name: AdobeSign-AdobeSignBucket-Arn

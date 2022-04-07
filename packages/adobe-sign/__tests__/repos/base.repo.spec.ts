@@ -40,7 +40,7 @@ describe('BaseRepo', () => {
    * BaseRepo is an abstract class so we are testing it through
    * the TemplatesRepo.
    */
-  describe('create', () => {
+  describe('put', () => {
     it('should throw when dynamo throws', async () => {
       // Arrange
       const { repo, dynamo } = setup();
@@ -50,7 +50,7 @@ describe('BaseRepo', () => {
       dynamo.put.mockImplementation(() => { throw expectedError; });
 
       // Act / Assert
-      await expect(repo.create(template)).rejects.toThrow(expectedError);
+      await expect(repo.put(template)).rejects.toThrow(expectedError);
     });
 
     it('should put and return the item', async () => {
@@ -62,7 +62,7 @@ describe('BaseRepo', () => {
       putReturns(dynamo, null);
 
       // Act
-      const result = await repo.create(expectedTemplate);
+      const result = await repo.put(expectedTemplate);
 
       // Assert
       expect(dynamo.put.mock.calls[0][0].TableName).toBe(expectedTable);

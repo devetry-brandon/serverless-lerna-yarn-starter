@@ -7,6 +7,7 @@ export class User {
   lastName: string;
   customField: string;
 
+  /* istanbul ignore next */
   constructor(data: Partial<User>) {
     this.id = data.id;
     this.email = data.email;
@@ -18,6 +19,7 @@ export class User {
 
 @injectable()
 export class UsersRepo {
+  /* istanbul ignore next */
   public async getUserById(id: string): Promise<User> {
     return {
       id: id,

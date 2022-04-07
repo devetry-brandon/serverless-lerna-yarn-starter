@@ -1,0 +1,28 @@
+service: adobe-sign-sqs-workday
+
+provider:
+  name: aws
+
+resources:
+  Resources:
+    WorkdayWebhookQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: workday-webhooks.fifo
+        FifoQueue: true
+        ContentBasedDeduplication: true
+  Outputs:
+    WorkdayWebhookQueueARN:
+      Description: "ARN of the WorkdayWebhookQueue"
+      Value:
+        Fn::GetAtt:
+          - WorkdayWebhookQueue
+          - Arn
+      Export:
+        Name: AdobeSign-WorkdayWebhookQueue-Arn
+    WorkdayWebhookQueueURL:
+      Description: "Queue url of the WorkdayWebhookQueue"
+      Value:
+        Ref: WorkdayWebhookQueue
+      Export:
+        Name: AdobeSign-WorkdayWebhookQueue-Url

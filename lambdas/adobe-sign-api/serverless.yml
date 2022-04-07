@@ -10,7 +10,9 @@ provider:
     REGION: ${opt:region, 'us-east-1'}
     STAGE: ${opt:stage, 'dev'}
     CACHE_ENDPOINT: { 'Fn::ImportValue': 'AdobeSign-ElasticCacheCluster-Endpoint' }
-
+    AGREEMENT_WEBHOOK_QUEUE_URL: { 'Fn::ImportValue': 'AdobeSign-AgreementWebhookQueue-Url' }
+    WORKDAY_WEBHOOK_QUEUE_URL: { 'Fn::ImportValue': 'AdobeSign-WorkdayWebhookQueue-Url' }
+    
 functions:
   getAgreement:
     role: lambdaRole
@@ -60,9 +62,9 @@ functions:
             parameters:
               paths:
                 id: true
-  createTemplate:
+  putTemplate:
     role: lambdaRole
-    handler: lib/templates-controller.createTemplate
+    handler: lib/templates-controller.putTemplate
     vpc:
       securityGroupIds:
         - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
@@ -71,7 +73,43 @@ functions:
     events:
       - http:
           path: templates
+          method: put
+  webhookVerification:
+    role: lambdaRole
+    handler: lib/webhook-controller.webhookVerification
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: webhook
+          method: get
+  webhookPost:
+    role: lambdaRole
+    handler: lib/webhook-controller.webhookPost
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - http:
+          path: webhook
           method: post
+  processAgreementWebhook:
+    role: lambdaRole
+    handler: lib/agreements-controller.processWebhook
+    vpc:
+      securityGroupIds:
+        - { 'Fn::ImportValue': 'AdobeSign-ServerlessSecurityGroup-GroupId' }
+      subnetIds:
+        - { 'Fn::ImportValue': 'AdobeSign-PrivateSubnetA-Ref' }
+    events:
+      - sqs:
+          arn: { 'Fn::ImportValue': 'AdobeSign-AgreementWebhookQueue-Arn' }
+          batchSize: 1
 
 resources:
   Resources:
@@ -134,3 +172,20 @@ resources:
                     - "dynamodb:BatchWriteItem"
                     - "dynamodb:PutItem"
                     - "dynamodb:UpdateItem"
+                - Effect: "Allow"
+                  Resource:
+                    - { 'Fn::ImportValue': 'AdobeSign-AgreementWebhookQueue-Arn' }
+                    - { 'Fn::ImportValue': 'AdobeSign-WorkdayWebhookQueue-Arn' }
+                  Action:
+                    - "sqs:ReceiveMessage"
+                    - "sqs:DeleteMessage"
+                    - "sqs:SendMessage"
+                    - "sqs:GetQueueAttributes"
+                - Effect: "Allow"
+                  Resource:
+                    Fn::Join:
+                      - ""
+                      - - { 'Fn::ImportValue': 'AdobeSign-AdobeSignBucket-Arn' }
+                        - "/*"
+                  Action:
+                    - "s3:PutObject"

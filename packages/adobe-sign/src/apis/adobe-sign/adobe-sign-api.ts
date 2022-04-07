@@ -2,6 +2,7 @@ import {AwsSecretKey, AwsSecretName, AxiosProvider, NotFoundError, SecretsManage
 import {injectable} from "tsyringe";
 import {Agreement} from "../../models/adobe-sign/agreement";
 import {Axios} from "axios";
+import * as csvtojson from "csvtojson";
 
 @injectable()
 export class AdobeSignApi {
@@ -53,6 +54,7 @@ export class AdobeSignApi {
     let retryCount = 0;
     try {
       const httpClient = await this.getHttpClient();
+      /* istanbul ignore next */
       httpClient.interceptors.response.use(successfulRes => successfulRes, async error => {
         if (error.response.data.code === 'AGREEMENT_NOT_EXPOSED' && retryCount < 5) {
           retryCount++;
@@ -66,6 +68,31 @@ export class AdobeSignApi {
       return linksResponse.data.signingUrlSetInfos[0].signingUrls[0].esignUrl;
     } catch (error) {
       this.handleApiError(error, 'getAgreementSigningUrls');
+    }
+  }
+
+  public async getAgreementFormData(id: string): Promise<{[name: string]: string}> {
+    try {
+      const httpClient = await this.getHttpClient();
+      const result = await httpClient.get(`/agreements/${id}/formData`);
+      const jsonFromCsv = await csvtojson({
+        delimiter: ',',
+        flatKeys: true
+      }).fromString(result.data);
+
+      return jsonFromCsv[0];
+    } catch (error) {
+      this.handleApiError(error, 'getAgreementFormData');
+    }
+  }
+
+  public async getAgreementPdf(id: string): Promise<Buffer> {
+    try {
+      const httpClient = await this.getHttpClient();
+      const result = await httpClient.get(`/agreements/${id}/combinedDocument`, {responseType: 'arraybuffer'});
+      return result.data;
+    } catch (error) {
+      this.handleApiError(error, 'getAgreementFormData');
     }
   }
 

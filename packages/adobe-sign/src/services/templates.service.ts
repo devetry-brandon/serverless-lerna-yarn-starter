@@ -6,11 +6,11 @@ import { TemplatesRepo } from "../repos/templates.repo";
 export class TemplatesService {
   constructor(private templatesRepo: TemplatesRepo) {}
 
-  async getTemplate(id: string): Promise<Template> {
+  public async getTemplate(id: string): Promise<Template> {
     return await this.templatesRepo.getTemplateById(id);
   }
 
-  async createTemplate(template: Template): Promise<Template> {
-    return await this.templatesRepo.create(template);
+  public async putTemplate(template: Template): Promise<Template> {
+    return await this.templatesRepo.put(template);
   }
 }

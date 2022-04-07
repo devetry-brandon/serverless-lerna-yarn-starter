@@ -28,6 +28,7 @@
   "dependencies": {
     "asu-core": "^1.0.0",
     "axios": "^0.26.1",
+    "csvtojson": "^2.0.10",
     "tsyringe": "^4.6.0"
   }
 }
