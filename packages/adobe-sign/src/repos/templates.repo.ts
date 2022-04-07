@@ -9,7 +9,7 @@ export class TemplatesRepo extends BaseRepo<Template> {
     super(connectionProvider, 'templates', 'adobeSignId');
   }
 
-  async getTemplateById(id: string): Promise<Template> {
+  public async getTemplateById(id: string): Promise<Template> {
     const item = await this.getById(id);
     return new Template(item);
   }

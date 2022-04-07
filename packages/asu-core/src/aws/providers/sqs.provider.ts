@@ -3,7 +3,7 @@ import { injectable } from "tsyringe";
 
 @injectable()
 export class SqsProvider {
-  resolve(): SQS {
+  public resolve(): SQS {
     return new SQS({apiVersion: '2012-11-05'})
   }
 }

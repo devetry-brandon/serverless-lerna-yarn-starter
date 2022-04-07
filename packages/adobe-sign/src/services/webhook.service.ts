@@ -6,7 +6,7 @@ import { Webhook } from "../adobe-sign";
 export class WebhookService {
   constructor(private secretManager: SecretsManagerService, private sqsService: SqsService) {}
 
-  async validateClientId(clientId: string): Promise<void> {
+  public async validateClientId(clientId: string): Promise<void> {
     const storedClientId = await this.secretManager.getSecret(AwsSecretName.AdobeSign, AwsSecretKey.AdobeSignClientId);
 
     if (clientId !== storedClientId) {
@@ -14,7 +14,7 @@ export class WebhookService {
     }
   }
 
-  async processWebhook(webhook: Webhook): Promise<void> {
+  public async processWebhook(webhook: Webhook): Promise<void> {
     await this.sqsService.sendMessage(
       SqsQueue.AgreementWebhooks,
       JSON.stringify(webhook),
